@@ -25,6 +25,11 @@ STEPS = [
 ]
 
 
+def bj_now():
+    """返回北京时间字符串。GitHub Actions 的 runner 是 UTC，直接 strftime 会差 8 小时。"""
+    return time.strftime("%Y-%m-%d %H:%M", time.gmtime(time.time() + 8 * 3600))
+
+
 def read_var(path, var):
     """从 window.XXX = {...}; 里取出 JSON。"""
     if not os.path.exists(path):
@@ -38,7 +43,7 @@ def read_var(path, var):
 
 def main():
     print("=" * 56)
-    print("每日数据更新 · %s" % time.strftime("%Y-%m-%d %H:%M"))
+    print("每日数据更新 · %s" % bj_now())
     print("=" * 56)
 
     results = []

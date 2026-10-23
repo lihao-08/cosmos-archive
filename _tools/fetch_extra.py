@@ -25,6 +25,11 @@ UA = {"User-Agent": "Mozilla/5.0 (cosmos-site)"}
 os.makedirs(VID_DIR, exist_ok=True)
 
 
+def bj_now():
+    """返回北京时间字符串。GitHub Actions 的 runner 是 UTC，直接 strftime 会差 8 小时。"""
+    return time.strftime("%Y-%m-%d %H:%M", time.gmtime(time.time() + 8 * 3600))
+
+
 def get(url, timeout=60, retries=3):
     last = None
     for i in range(retries):
@@ -247,7 +252,7 @@ def main():
         videos = fetch_videos()
 
     extra = {
-        "fetched": time.strftime("%Y-%m-%d %H:%M"),
+        "fetched": bj_now(),
         "videos": videos,
         "eonet": fetch_eonet(),
         "sbdb": fetch_sbdb(near_names) if near_names else [],

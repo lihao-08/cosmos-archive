@@ -26,6 +26,11 @@ UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.3
 os.makedirs(SUN_DIR, exist_ok=True)
 
 
+def bj_now():
+    """返回北京时间字符串。GitHub Actions 的 runner 是 UTC，直接 strftime 会差 8 小时。"""
+    return time.strftime("%Y-%m-%d %H:%M", time.gmtime(time.time() + 8 * 3600))
+
+
 def get(url, timeout=45, retries=3):
     last = None
     for i in range(retries):
@@ -106,7 +111,7 @@ def fetch_space_weather():
     except Exception as e:  # noqa: BLE001
         print("  wind FAIL", type(e).__name__)
 
-    out["updated"] = time.strftime("%Y-%m-%d %H:%M")
+    out["updated"] = bj_now()
     return out
 
 
@@ -177,7 +182,7 @@ def main():
         print("  ! 太阳影像缺失，沿用上次")
 
     data = {
-        "fetched": time.strftime("%Y-%m-%d %H:%M"),
+        "fetched": bj_now(),
         "launch": launch,
         "weather": weather,
         "sun": sun,

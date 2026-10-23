@@ -24,6 +24,11 @@ IMG_DIR = os.path.join(SITE, "assets", "img", "epic")
 UA = {"User-Agent": "Mozilla/5.0 (cosmos-site data fetcher)"}
 
 
+def bj_now():
+    """返回北京时间字符串。GitHub Actions 的 runner 是 UTC，直接 strftime 会差 8 小时。"""
+    return time.strftime("%Y-%m-%d %H:%M", time.gmtime(time.time() + 8 * 3600))
+
+
 def get(url, timeout=60, retries=3):
     last = None
     for i in range(retries):
@@ -190,7 +195,7 @@ def main():
         except Exception:  # noqa: BLE001
             prev = {}
 
-    out = {"fetched": time.strftime("%Y-%m-%d %H:%M"), "epic": None, "neo": None, "exo": None}
+    out = {"fetched": bj_now(), "epic": None, "neo": None, "exo": None}
 
     if not args.no_epic:
         out["epic"] = fetch_epic(key)

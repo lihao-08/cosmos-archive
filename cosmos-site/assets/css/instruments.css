@@ -1,0 +1,972 @@
+/* ============================================================
+   寰宇 COSMOS · instruments.css
+   数据仪器：太阳系档案 / 时间线 / 实时太阳系仪 / 观天指南 / 天象 / 实时深空
+   ============================================================ */
+
+/* ---------- 太阳系 ---------- */
+.solar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: clamp(24px, 4vw, 48px);
+  align-items: start;
+}
+.solar-chart {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 26px 26px 20px;
+}
+.solar-chart h4 {
+  font-size: var(--fs-caption);
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+.bar-row {
+  display: grid;
+  grid-template-columns: 44px 1fr 74px;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+.bar-row:hover, .bar-row.hot { background: rgba(139, 92, 246, 0.1); }
+.bar-name { font-size: var(--fs-body-s); color: #c9d3e6; white-space: nowrap; }
+.bar-track {
+  height: 18px;
+  border-radius: 5px;
+  background: rgba(148, 163, 184, 0.1);
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 5px;
+  transition: width 1.1s var(--ease);
+}
+.bar-val { font-size: var(--fs-caption); color: var(--faint); font-variant-numeric: tabular-nums; text-align: right; }
+
+.solar-table-wrap {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--panel);
+  overflow-x: auto;
+}
+.solar-table { width: 100%; border-collapse: collapse; font-size: var(--fs-body-s); min-width: 520px; }
+.solar-table th {
+  text-align: left;
+  padding: 13px 16px;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 500;
+  background: rgba(148, 163, 184, 0.07);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.solar-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.07);
+  color: #c3cde0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.solar-table tbody tr { transition: background 0.25s; cursor: pointer; }
+.solar-table tbody tr:hover { background: rgba(139, 92, 246, 0.1); }
+.solar-table tbody tr:last-child td { border-bottom: none; }
+.solar-table .pl-name { display: flex; align-items: center; gap: 9px; color: #fff; font-weight: 600; }
+.pl-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 8px currentColor; }
+
+
+/* ---------- 时间线 ---------- */
+.timeline-block { margin-top: clamp(48px, 7vw, 80px); }
+.timeline-title {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 3vw, 30px);
+  letter-spacing: 0.1em;
+  margin-bottom: 34px;
+  text-align: center;
+}
+.timeline {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0;
+  position: relative;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 9px; left: 2%; right: 2%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), rgba(56, 189, 248, 0.5), transparent);
+}
+.tl-item { position: relative; padding: 30px 14px 0; text-align: center; }
+.tl-item::before {
+  content: "";
+  position: absolute;
+  top: 3px; left: 50%;
+  width: 13px; height: 13px;
+  margin-left: -6.5px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--violet-soft);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s;
+}
+.tl-item:hover::before { transform: scale(1.35); box-shadow: 0 0 14px rgba(139, 92, 246, 0.8); }
+.tl-year {
+  display: block;
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--violet-soft);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 4px;
+}
+.tl-text { font-size: var(--fs-caption); color: var(--muted); line-height: var(--lh-snug); }
+
+
+/* ============================================================
+   实时太阳系仪
+   ============================================================ */
+.sec-orrery .sec-kicker { color: var(--cyan); }
+
+.orrery {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.95fr);
+  gap: clamp(18px, 3vw, 36px);
+  align-items: start;
+}
+.orrery-stage {
+  position: relative;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(139, 92, 246, 0.07), transparent 70%),
+    #060a16;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+#orreryCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: grab;
+  touch-action: none;
+}
+#orreryCanvas.dragging { cursor: grabbing; }
+.orrery-clock {
+  position: absolute;
+  top: 14px; left: 16px;
+  font-size: var(--fs-body-s);
+  letter-spacing: 0.08em;
+  color: #cdd8ee;
+  background: rgba(4, 6, 14, 0.6);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(6px);
+}
+.orrery-note {
+  position: absolute;
+  bottom: 10px; left: 16px;
+  font-size: var(--fs-caption);
+  color: var(--faint);
+}
+/* 画布上的操作提示 */
+.orrery-hints {
+  position: absolute;
+  top: 14px; right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-end;
+  pointer-events: none;
+}
+.orrery-hints span {
+  font-size: var(--fs-caption);
+  color: rgba(205, 216, 238, 0.72);
+  background: rgba(4, 6, 14, 0.55);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 3px 9px;
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+
+/* 行星特写（可拖拽自转） */
+.orrery-focus {
+  position: relative;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(139, 92, 246, 0.1), transparent 68%),
+    var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: focusIn 0.35s ease;
+}
+.orrery-focus[hidden] { display: none; }
+@keyframes focusIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+#planetCanvas {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  cursor: grab;
+  touch-action: none;
+  border-radius: 50%;
+}
+#planetCanvas.dragging { cursor: grabbing; }
+.pf-caption {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+}
+.pf-caption b {
+  font-size: var(--fs-body);
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+.pf-caption span {
+  font-size: var(--fs-caption);
+  color: var(--faint);
+}
+
+.orrery-side { display: flex; flex-direction: column; gap: 16px; }
+.orrery-controls {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ctrl-row { display: flex; gap: 10px; }
+.ctrl-row .btn { flex: 1; justify-content: center; padding: 10px 12px; font-size: var(--fs-body-s); }
+.ctrl-label { font-size: var(--fs-caption); color: var(--faint); letter-spacing: 0.1em; }
+.speed-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.spd {
+  padding: 6px 12px;
+  font-size: var(--fs-caption);
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.25s;
+  font-family: var(--font-sans);
+}
+.spd:hover { color: var(--text); border-color: rgba(56, 189, 248, 0.5); }
+.spd.active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.85), rgba(139, 92, 246, 0.8));
+  border-color: transparent;
+}
+.tilt-row, .date-row { display: flex; align-items: center; gap: 10px; }
+.tilt-row b { font-size: var(--fs-caption); color: #cdd8ee; min-width: 34px; text-align: right; font-variant-numeric: tabular-nums; }
+
+input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.6), rgba(56, 189, 248, 0.6));
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--violet);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
+  cursor: grab;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--violet);
+  cursor: grab;
+}
+
+.orrery-info {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  min-height: 220px;
+}
+.orrery-hint { color: var(--faint); font-size: var(--fs-body-s); line-height: var(--lh-body); }
+.oi-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.oi-dot { width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 12px currentColor; flex: none; }
+.oi-head b { font-size: var(--fs-h3); letter-spacing: 0.06em; }
+.oi-head span { font-size: var(--fs-caption); color: var(--faint); letter-spacing: 0.14em; }
+.oi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 16px; }
+.oi-grid .k { font-size: var(--fs-caption); color: var(--faint); letter-spacing: 0.06em; }
+.oi-grid .v { font-size: var(--fs-body-s); color: #dbe4f5; font-variant-numeric: tabular-nums; font-weight: 600; }
+.oi-note { margin-top: 12px; font-size: var(--fs-caption); color: var(--faint); line-height: var(--lh-body); }
+
+
+/* ============================================================
+   今晚观天
+   ============================================================ */
+.sec-tonight .sec-kicker { color: var(--amber); }
+
+.tonight-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 28px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  margin-bottom: 22px;
+}
+.tb-item { display: flex; align-items: center; gap: 10px; font-size: var(--fs-body-s); color: var(--muted); }
+.tb-item input[type="range"] { width: 150px; flex: none; }
+.tb-item b { color: #dbe4f5; font-variant-numeric: tabular-nums; min-width: 44px; }
+.tb-item select {
+  background: #0d1424;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: var(--fs-body-s);
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+.tb-note { font-size: var(--fs-caption); color: var(--faint); margin-left: auto; }
+
+.tonight-cards {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1.3fr;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+.tcard {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.tcard h3 {
+  font-size: var(--fs-caption);
+  letter-spacing: 0.24em;
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+.tcard-moon { display: flex; gap: 18px; align-items: center; }
+.moon-meta b { font-size: var(--fs-h3); letter-spacing: 0.08em; color: #f5ead0; display: block; margin-bottom: 6px; }
+.moon-meta p { font-size: var(--fs-body-s); color: var(--muted); line-height: var(--lh-loose); }
+.moon-meta b { color: #e8dfc8; }
+.sun-meta p { font-size: var(--fs-body-s); color: var(--muted); line-height: var(--lh-loose); }
+.sun-meta b { color: #ffd34d; font-variant-numeric: tabular-nums; font-weight: 600; }
+.tcard-tip { background: linear-gradient(160deg, rgba(139, 92, 246, 0.12), rgba(56, 189, 248, 0.06)), var(--panel); }
+.tcard-tip p { font-size: var(--fs-body-s); color: #cdd8ee; line-height: var(--lh-loose); }
+.tcard-tip .tip-sub { color: var(--faint); font-size: var(--fs-caption); margin-top: 8px; }
+
+.planet-table-wrap {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow-x: auto;
+  background: var(--panel);
+  margin-bottom: 40px;
+}
+.planet-table { width: 100%; border-collapse: collapse; font-size: var(--fs-body-s); min-width: 640px; }
+.planet-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: var(--fs-caption);
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 500;
+  background: rgba(148, 163, 184, 0.07);
+  border-bottom: 1px solid var(--line);
+}
+.planet-table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.07);
+  color: #c3cde0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.planet-table tbody tr:last-child td { border-bottom: none; }
+.planet-table tbody tr { transition: background 0.25s; }
+.planet-table tbody tr:hover { background: rgba(245, 158, 11, 0.07); }
+.pt-name { display: flex; align-items: center; gap: 9px; color: #fff; font-weight: 600; }
+.pt-dot { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
+.pt-mag { color: #ffd34d; font-weight: 600; }
+.pt-status-ok { color: #4ade80; }
+.pt-status-low { color: #fbbf24; }
+.pt-status-no { color: var(--faint); }
+
+/* ---------- 天象预告 ---------- */
+.events-title {
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 2.6vw, 26px);
+  letter-spacing: 0.1em;
+  margin-bottom: 22px;
+}
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.event-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px 18px;
+  transition: transform 0.3s var(--ease), border-color 0.3s;
+}
+.event-card:hover { transform: translateY(-3px); border-color: rgba(245, 158, 11, 0.4); }
+.event-card .ec-kind {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.18em;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.event-card .ec-kind.opp { color: #f0abfc; border-color: rgba(240, 171, 252, 0.4); }
+.event-card .ec-kind.elong { color: #7dd3fc; border-color: rgba(125, 211, 252, 0.4); }
+.event-card .ec-kind.rain { color: #bef264; border-color: rgba(190, 242, 100, 0.4); }
+.event-card .ec-kind.ecl { color: #fca5a5; border-color: rgba(252, 165, 165, 0.4); }
+.event-card b { display: block; font-size: var(--fs-body); margin: 10px 0 4px; color: #fff; }
+.event-card p { font-size: var(--fs-caption); color: var(--muted); line-height: var(--lh-body); }
+.event-card .ec-date { color: #ffd34d; font-size: var(--fs-caption); font-variant-numeric: tabular-nums; }
+.event-card .ec-count {
+  margin-top: 8px;
+  font-size: var(--fs-caption);
+  color: var(--cyan);
+  letter-spacing: 0.05em;
+}
+
+
+/* ---------- 响应式补充 ---------- */
+@media (max-width: 1080px) {
+  .orrery { grid-template-columns: 1fr; }
+  .tonight-cards { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 760px) {
+  .tonight-cards { grid-template-columns: 1fr; }
+  .tcard-moon { flex-direction: column; text-align: center; }
+  .tb-note { margin-left: 0; width: 100%; }
+  .oi-grid { grid-template-columns: 1fr 1fr; }
+  .ctrl-row { flex-direction: column; }
+  .orrery-hints {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
+    max-width: 46%;
+  }
+  .orrery-hints span {
+    font-size: var(--fs-micro);
+    padding: 2px 7px;
+    letter-spacing: -0.01em;
+  }
+  .orrery-note { font-size: var(--fs-micro); max-width: 66%; }
+}
+
+
+/* ---------- 实时深空 ---------- */
+.sec-live .sec-kicker { color: var(--amber); }
+
+.live-shell {
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 0%, rgba(245, 158, 11, 0.06), transparent 70%),
+    var(--panel-solid);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.live-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 10px 10px 0;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* 右侧渐隐：提示还能横向滑动 */
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 28px), transparent 100%);
+}
+.live-tabs::-webkit-scrollbar { display: none; }
+.ltab {
+  flex: 0 0 auto;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: var(--fs-body-s);
+  letter-spacing: 0.02em;
+  padding: 11px 18px 13px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  border-radius: 9px 9px 0 0;
+}
+.ltab:hover { color: var(--text); background: rgba(148, 163, 184, 0.06); }
+.ltab.active {
+  color: var(--text);
+  border-bottom-color: var(--amber);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.live-panel {
+  display: none;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.9fr);
+  gap: clamp(16px, 2.4vw, 30px);
+  padding: clamp(16px, 2.4vw, 26px);
+  align-items: start;
+}
+.live-panel.active { display: grid; animation: panelIn 0.35s var(--ease); }
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* 地球 */
+.earth-stage { position: relative; border-radius: 12px; overflow: hidden; background: #02040c; }
+#epicImg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  max-height: min(52vh, 440px);
+  object-fit: contain;
+  transition: opacity 0.25s;
+}
+#epicImg.swapping { opacity: 0.25; }
+.earth-badge {
+  position: absolute;
+  top: 12px; left: 12px;
+  font-size: var(--fs-caption);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  color: #dbe6f7;
+  background: rgba(2, 4, 12, 0.66);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 4px 10px;
+  backdrop-filter: blur(6px);
+}
+.earth-side { display: flex; flex-direction: column; gap: 12px; }
+.epic-date {
+  font-size: var(--fs-body-s);
+  letter-spacing: 0.12em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+.epic-caption { font-size: var(--fs-body-s); color: var(--muted); line-height: var(--lh-loose); }
+#epicSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  outline: none;
+  cursor: pointer;
+}
+#epicSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.28);
+  cursor: grab;
+}
+#epicSlider::-moz-range-thumb {
+  width: 15px; height: 15px;
+  border: 0; border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.28);
+}
+.epic-ctrl { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.epic-ctrl .btn { font-size: var(--fs-body-s); padding: 9px 16px; }
+.epic-meta { font-size: var(--fs-caption); color: var(--faint); font-variant-numeric: tabular-nums; }
+
+/* 小行星 / 系外行星画布 */
+.neo-stage, .exo-stage { position: relative; }
+#neoCanvas, #exoCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(56, 189, 248, 0.05), transparent 72%), #02040c;
+  cursor: crosshair;
+}
+.neo-tip {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+  background: rgba(6, 10, 22, 0.94);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 9px;
+  padding: 7px 11px;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-snug);
+  color: var(--text);
+  white-space: nowrap;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.neo-tip b { color: var(--amber); }
+.neo-tip[hidden] { display: none; }
+
+.neo-side, .exo-side { display: flex; flex-direction: column; gap: 14px; }
+.neo-hint { font-size: var(--fs-body-s); color: var(--muted); line-height: var(--lh-loose); }
+.neo-hint strong { color: #cdd8ee; font-weight: 600; }
+
+.neo-stats, .exo-stats { display: flex; flex-wrap: wrap; gap: 8px; }
+.nstat {
+  flex: 1 1 auto;
+  min-width: 96px;
+  background: rgba(148, 163, 184, 0.05);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+.nstat b {
+  display: block;
+  font-size: var(--fs-h3);
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--lh-tight);
+}
+.nstat span { font-size: var(--fs-caption); color: var(--faint); }
+
+.neo-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.neo-list::-webkit-scrollbar { width: 4px; }
+.neo-list::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 2px; }
+.neo-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: var(--fs-caption);
+  padding: 6px 8px;
+  border-radius: 7px;
+  transition: background 0.2s;
+}
+.neo-list li:hover { background: rgba(148, 163, 184, 0.08); }
+.neo-list .n-name { color: #cdd8ee; font-variant-numeric: tabular-nums; }
+.neo-list .n-dist { color: var(--amber); font-variant-numeric: tabular-nums; flex: 0 0 auto; }
+.neo-list .n-dist.soon { color: #f87171; }
+
+.exo-legend { display: flex; flex-direction: column; gap: 7px; }
+.exo-legend .lg {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: var(--fs-caption);
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s, opacity 0.2s;
+}
+.exo-legend .lg:hover { color: var(--text); }
+.exo-legend .lg.off { opacity: 0.35; }
+.exo-legend .lg i {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.exo-legend .lg em {
+  margin-left: auto;
+  font-style: normal;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-caption);
+}
+
+@media (max-width: 1080px) {
+  .live-panel { grid-template-columns: 1fr; }
+  .neo-list { max-height: 240px; }
+}
+@media (max-width: 760px) {
+  .ltab { font-size: var(--fs-body-s); padding: 10px 13px 12px; }
+  .live-panel { padding: 14px; gap: 16px; }
+  .epic-caption { font-size: var(--fs-caption); }
+}
+
+/* ---------- 太阳系与时间线响应式 ---------- */
+@media (max-width: 1080px) {
+  .solar-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .timeline::before { display: none; }
+  .timeline { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .tl-item { padding-top: 22px; text-align: left; padding-left: 26px; }
+  .tl-item::before { left: 0; margin-left: 0; top: 6px; }
+}
+
+/* ---------- 太阳活动 ---------- */
+.sun-stage { position: relative; }
+#sunImg {
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: min(56vh, 460px);
+  object-fit: contain;
+  border-radius: var(--r-md);
+  background: #000;
+  border: 1px solid var(--line);
+}
+.sun-waves {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.sw-btn {
+  flex: 1 1 0;
+  min-width: 96px;
+  text-align: left;
+  padding: 8px 11px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface-1);
+  transition: border-color var(--t-2), background var(--t-2);
+}
+.sw-btn b {
+  display: block;
+  font-size: var(--fs-body-s);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+.sw-btn span {
+  display: block;
+  font-size: var(--fs-micro);
+  color: var(--faint);
+  margin-top: 2px;
+}
+.sw-btn:hover { border-color: var(--line-strong); background: var(--surface-2); }
+.sw-btn.active {
+  border-color: rgba(245, 158, 11, 0.55);
+  background: rgba(245, 158, 11, 0.1);
+}
+.sw-btn.active b { color: var(--amber); }
+
+.sun-side { display: flex; flex-direction: column; gap: 14px; }
+#swCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-md);
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.04), transparent 60%), #02040c;
+}
+.sw-stats { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------- 全球发射 ---------- */
+.launch-stage { min-width: 0; }
+.launch-list {
+  list-style: none;
+  max-height: 540px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+.launch-list::-webkit-scrollbar { width: 4px; }
+.launch-list::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 2px; }
+
+.launch-item {
+  display: flex;
+  gap: 14px;
+  padding: 13px 4px;
+  border-bottom: 1px solid var(--line-soft);
+  transition: background var(--t-2);
+}
+.launch-item:last-child { border-bottom: none; }
+.launch-item:hover { background: rgba(148, 163, 184, 0.04); }
+
+.li-when {
+  flex: 0 0 62px;
+  text-align: right;
+  padding-top: 1px;
+}
+.li-when b {
+  display: block;
+  font-size: var(--fs-body-s);
+  color: var(--cyan);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+.li-when span {
+  display: block;
+  font-size: var(--fs-micro);
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.li-body { min-width: 0; flex: 1; }
+.li-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+.li-status {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.06em;
+  padding: 1px 7px;
+  border-radius: var(--r-full);
+  border: 1px solid transparent;
+  text-transform: uppercase;
+}
+.li-status.go { color: #4ade80; background: rgba(74, 222, 128, 0.12); border-color: rgba(74, 222, 128, 0.3); }
+.li-status.tbd { color: var(--faint); background: rgba(148, 163, 184, 0.1); border-color: var(--line); }
+.li-status.hold { color: var(--amber); background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.3); }
+.li-agency {
+  font-size: var(--fs-micro);
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.li-name {
+  font-size: var(--fs-body-s);
+  color: var(--text);
+  font-weight: 600;
+  line-height: var(--lh-snug);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.li-meta {
+  font-size: var(--fs-micro);
+  color: var(--faint);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.launch-side { display: flex; flex-direction: column; gap: 14px; }
+.launch-stats { display: flex; flex-wrap: wrap; gap: 8px; }
+.launch-agencies { display: flex; flex-direction: column; gap: 7px; }
+.launch-agencies .lg {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: var(--fs-body-s);
+  color: var(--muted);
+}
+.launch-agencies .lg i { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+.launch-agencies .lg em {
+  margin-left: auto;
+  font-style: normal;
+  color: var(--faint);
+  font-size: var(--fs-micro);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1080px) {
+  .launch-list { max-height: 420px; }
+}
+@media (max-width: 760px) {
+  .li-when { flex-basis: 52px; }
+  .li-name { font-size: var(--fs-caption); }
+  #sunImg { max-height: 62vw; }
+}
+
+
+/* ---------- 太阳系表格：窄屏转为卡片 ---------- */
+.table-scroll { overflow-x: auto; }
+
+@media (max-width: 760px) {
+  .solar-table { display: block; min-width: 0; }
+  .solar-table thead { display: none; }
+  .solar-table tbody { display: block; }
+  .solar-table tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .solar-table tr:last-child { border-bottom: none; }
+  .solar-table td {
+    display: block;
+    padding: 0;
+    border: none;
+    font-size: var(--fs-body-s);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-dim);
+  }
+  .solar-table td:first-child {
+    grid-column: 1 / -1;
+    font-size: var(--fs-body);
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  .solar-table td:not(:first-child)::before {
+    content: attr(data-label);
+    display: block;
+    font-size: var(--fs-micro);
+    color: var(--faint);
+    letter-spacing: 0.04em;
+    margin-bottom: 1px;
+  }
+}
+
+
+/* ---------- 观天行星表：窄屏转为卡片 ---------- */
+@media (max-width: 760px) {
+  .planet-table { display: block; min-width: 0; }
+  .planet-table thead { display: none; }
+  .planet-table tbody { display: block; }
+  .planet-table tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .planet-table tr:last-child { border-bottom: none; }
+  .planet-table td {
+    display: block;
+    padding: 0;
+    border: none;
+    font-size: var(--fs-body-s);
+    font-variant-numeric: tabular-nums;
+  }
+  .planet-table td:first-child {
+    grid-column: 1 / -1;
+    font-size: var(--fs-body);
+    margin-bottom: 2px;
+  }
+  .planet-table td:not(:first-child)::before {
+    content: attr(data-label);
+    display: block;
+    font-size: var(--fs-micro);
+    color: var(--faint);
+    letter-spacing: 0.04em;
+    margin-bottom: 1px;
+  }
+}

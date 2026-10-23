@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>漫游寰宇 · 基于 NASA 开放数据的宇宙影像档案</title>
+<meta name="description" content="寰宇 COSMOS：汇聚 NASA、JPL、NOAA 等全球航天机构公开数据的宇宙影像档案——深空影像、动态影像、实时太阳活动、全球发射日程、近地小行星与系外行星图鉴。">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/layout.css">
+<link rel="stylesheet" href="assets/css/gallery.css">
+<link rel="stylesheet" href="assets/css/instruments.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%238b5cf6'/%3E%3Cellipse cx='16' cy='16' rx='14' ry='4.5' fill='none' stroke='%2338bdf8' stroke-width='2' transform='rotate(-20 16 16)'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<a class="skip-link" id="skipLink" href="#main">跳到主要内容</a>
+<canvas id="starfield" aria-hidden="true"></canvas>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+<nav class="dotnav" id="dotNav" aria-label="章节导航"></nav>
+
+<nav class="nav" id="nav">
+  <a class="nav-logo" href="#home">
+    <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
+      <circle cx="16" cy="16" r="8.5" fill="#8b5cf6"/>
+      <circle cx="13" cy="13" r="2.6" fill="#c4b5fd" opacity=".7"/>
+      <ellipse cx="16" cy="16" rx="14" ry="4.4" fill="none" stroke="#38bdf8" stroke-width="1.8" transform="rotate(-20 16 16)"/>
+    </svg>
+    <span class="nav-logo-text">寰宇<em>COSMOS</em></span>
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="#deepspace" data-sec="deepspace">深空图库</a>
+    <a href="#orrery" data-sec="orrery">实时星图</a>
+    <a href="#mars" data-sec="mars">红色星球</a>
+    <a href="#earth" data-sec="earth">蓝色家园</a>
+    <a href="#legacy" data-sec="legacy">人类足迹</a>
+    <a href="#videos" data-sec="videos">动态影像</a>
+    <a href="#solar" data-sec="solar">太阳系</a>
+    <a href="#tonight" data-sec="tonight">今晚观天</a>
+    <a href="#live" data-sec="live">实时太空</a>
+    <a href="#about" data-sec="about">关于数据</a>
+  </div>
+  <button class="nav-burger" id="navBurger" aria-label="菜单" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<main id="main">
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="home" data-nav="首页">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-veil" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <p class="hero-kicker">SPACE DATA ARCHIVE · 宇宙影像档案</p>
+    <h1 class="hero-title">漫游寰宇</h1>
+    <p class="hero-sub">一百八十九幅太空影像、六段动态画面、六千颗系外行星，<br>以及此刻的太阳、正在燃烧的野火与全球排队待发的火箭。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#deepspace">开始漫游</a>
+      <button class="btn btn-ghost" id="btnRandom">随机一张 ✦</button>
+    </div>
+  </div>
+  <div class="hero-scroll" aria-hidden="true"><span></span></div>
+</header>
+
+<!-- ================= STATS ================= -->
+<section class="stats">
+  <div class="stat reveal"><b class="count" data-target="189">0</b><span>影像档案</span></div>
+  <div class="stat reveal"><b class="count" data-target="6">0</b><span>段动态影像</span></div>
+  <div class="stat reveal"><b class="count" data-target="6050">0</b><span>颗系外行星</span></div>
+  <div class="stat reveal"><b class="count" data-target="8">0</b><span>权威数据源</span></div>
+</section>
+
+<!-- ================= FEATURED ================= -->
+<section class="featured section" id="featured">
+  <div class="wrap featured-grid">
+    <figure class="featured-fig reveal">
+      <img src="assets/img/featured-webb.jpg" alt="韦伯望远镜拍摄的 SMACS 0723 星系团深空场" loading="eager">
+      <figcaption>SMACS 0723 星系团 · 韦伯望远镜首张深空场</figcaption>
+    </figure>
+    <div class="featured-text reveal">
+      <p class="sec-kicker">FEATURED STORY</p>
+      <h2>一千个星系，挤在一枚沙粒大小的天空里</h2>
+      <p>2022 年 7 月，詹姆斯·韦伯太空望远镜发布了它的第一张全彩深空场——星系团 SMACS 0723。这片天区广为人知的参照物是：你伸直手臂看到的一粒沙子。而韦伯在里面拍到了成千上万个星系，每一个都由数千亿颗恒星组成。光线穿越了 46 亿年才抵达镜面，这是人类迄今拍到的「最深」的宇宙红外图像。</p>
+      <ul class="featured-meta">
+        <li><span>望远镜</span>James Webb Space Telescope</li>
+        <li><span>目标</span>SMACS 0723 星系团</li>
+        <li><span>波段</span>近红外 / 中红外</li>
+        <li><span>来源</span>NASA 图像与视频库</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DEEP SPACE GALLERY ================= -->
+<section class="section" id="deepspace" data-nav="深空图库">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-kicker">DEEP SPACE</p>
+      <h2 class="sec-title">深空图库</h2>
+      <p class="sec-desc">恒星死亡时抛出的尘埃，会在几万年后重新聚成新的太阳。这里收藏的每一帧，都是某个世界临终或初生的瞬间。</p>
+    </header>
+    <p class="sec-quote reveal">光在宇宙里走了一万年，我们只用一眼就看完了。</p>
+    <div class="chips" id="chips-deep" role="tablist" aria-label="深空图库筛选"></div>
+    <div class="grid" id="grid-deep"></div>
+    <p class="grid-empty" id="empty-deep" hidden>该类目暂无影像。</p>
+  </div>
+</section>
+
+<!-- ================= MARS ================= -->
+<section class="section sec-mars" id="mars" data-nav="红色星球">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-kicker">THE RED PLANET</p>
+      <h2 class="sec-title">红色星球</h2>
+      <p class="sec-desc">四十亿年前，这里也曾有河流与海洋。如今只剩铁锈色的荒漠和稀薄的大气，却成了人类最想抵达的下一站。</p>
+    </header>
+    <p class="sec-quote reveal">我们把机器送去那里，是想知道——曾经有水的地方，会不会也曾经有过什么。</p>
+    <div class="grid" id="grid-mars"></div>
+  </div>
+</section>
+
+<!-- ================= EARTH ================= -->
+<section class="section sec-earth" id="earth" data-nav="蓝色家园">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-kicker">PALE BLUE DOT</p>
+      <h2 class="sec-title">蓝色家园</h2>
+      <p class="sec-desc">从四百公里的轨道回望，大气层薄得像一层发光的膜。所有的战争与诗歌、离别与重逢，都发生在这层膜里面。</p>
+    </header>
+    <p class="sec-quote reveal">旅行者一号在六十亿公里外回头，拍到一个不足一像素的蓝点。那是我们。</p>
+    <div class="grid" id="grid-earth"></div>
+  </div>
+</section>
+
+<!-- ================= LEGACY ================= -->
+<section class="section sec-legacy" id="legacy" data-nav="人类足迹">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-kicker">HUMAN FOOTPRINTS</p>
+      <h2 class="sec-title">人类足迹</h2>
+      <p class="sec-desc">火箭离塔的尾焰、月壤上的一枚鞋印、真空中悬浮着拧螺丝的人。六十多年里，我们把身体一次次推向那层薄膜之外。</p>
+    </header>
+    <p class="sec-quote reveal">那是一小步，却是整个物种的方向。</p>
+    <div class="grid" id="grid-legacy"></div>
+  </div>
+</section>
+
+<!-- ================= VIDEO ================= -->
+<section class="section sec-videos" id="videos" data-nav="动态影像">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-kicker">NASA VIDEO ARCHIVE</p>
+      <h2 class="sec-title">动态影像</h2>
+      <p class="sec-desc">照片冻结瞬间，影像让时间重新流动。火箭离塔的震颤、月面上的跳跃、舱外作业时手套的动作——有些东西，只有动起来才看得见。</p>
+    </header>
+    <p class="sec-quote reveal">时间不能倒流，但可以重播。</p>
+    <div class="video-grid reveal" id="videoGrid"></div>
+  </div>
+</section>
+
+<div class="vmodal" id="vModal" role="dialog" aria-modal="true" aria-label="视频播放" hidden>
+  <div class="vmodal-backdrop" data-vclose></div>
+  <div class="vmodal-stage">
+    <button class="vmodal-close" id="vClose" aria-label="关闭视频">✕</button>
+    <div class="vmodal-player">
+      <video id="vPlayer" controls playsinline preload="metadata"></video>
+    </div>
+    <div class="vmodal-info">
+      <span class="vmodal-tag" id="vTag"></span>
+      <b id="vTitle"></b>
+      <p id="vDesc"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SOLAR SYSTEM ================= -->
+<section class="section sec-solar" id="solar" data-nav="太阳系">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-kicker">SOLAR SYSTEM</p>
+      <h2 class="sec-title">太阳系档案</h2>
+      <p class="sec-desc">一颗普通恒星，八颗行星。它们的大小、距离与公转周期，构成了我们所能理解的「家」的全部尺度。</p>
+    </header>
+    <p class="sec-quote reveal">把太阳缩成一颗柚子，地球就是十米外的一粒芝麻。</p>
+    <div class="solar-grid">
+      <div class="solar-chart reveal" id="solarChart" aria-label="天体直径对数比例对比图"></div>
+      <div class="solar-table-wrap reveal">
+        <table class="solar-table">
+          <thead>
+            <tr><th>天体</th><th>直径 (km)</th><th>平均距日</th><th>公转周期</th><th>卫星数</th><th>平均温度</th></tr>
+          </thead>
+          <tbody id="solarTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="timeline-block reveal">
+      <h3 class="timeline-title">航天大事记</h3>
+      <ol class="timeline" id="timeline"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 实时太阳系仪 ================= -->
+<section class="section sec-orrery" id="orrery" data-nav="实时星图">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-kicker">LIVE ORRERY</p>
+      <h2 class="sec-title">实时太阳系仪</h2>
+      <p class="sec-desc">此刻，八颗行星正在各自的轨道上运行。你看到的位置不是示意图，而是按 JPL 轨道要素解算的真实坐标，误差小于 0.1°。</p>
+    </header>
+    <p class="sec-quote reveal">转到今天这一格，是你与它们真实共享的时刻。</p>
+    <div class="orrery reveal">
+      <div class="orrery-stage">
+        <canvas id="orreryCanvas" width="940" height="640" role="img" aria-label="太阳系实时位置模拟"></canvas>
+        <div class="orrery-clock" id="orreryClock"></div>
+        <div class="orrery-hints">
+          <span>🖱 拖动旋转</span>
+          <span>⚙ 滚轮缩放</span>
+          <span>👆 点行星看特写</span>
+        </div>
+        <p class="orrery-note">轨道间距经压缩示意（非线性比例）· 行星大小为夸张显示</p>
+      </div>
+      <aside class="orrery-side">
+        <div class="orrery-focus" id="orreryFocus" hidden>
+          <canvas id="planetCanvas" width="320" height="320" aria-label="行星自转特写"></canvas>
+          <div class="pf-caption">
+            <b id="pfName">—</b>
+            <span id="pfHint">拖动球体可自转</span>
+          </div>
+        </div>
+        <div class="orrery-controls">
+          <div class="ctrl-row">
+            <button id="orreryPlay" class="btn btn-primary orrery-play">▶ 播放</button>
+            <button id="orreryNow" class="btn btn-ghost">回到此刻</button>
+            <button id="orreryReset" class="btn btn-ghost" title="重置视角">↺ 视角</button>
+          </div>
+          <div class="speed-row" id="orrerySpeeds">
+            <span class="ctrl-label">速度</span>
+            <button data-s="1" class="spd">实时</button>
+            <button data-s="86400" class="spd">1 天/秒</button>
+            <button data-s="2592000" class="spd active">30 天/秒</button>
+            <button data-s="15768000" class="spd">半年/秒</button>
+            <button data-s="31536000" class="spd">1 年/秒</button>
+          </div>
+          <label class="tilt-row">
+            <span class="ctrl-label">视角倾角</span>
+            <input type="range" id="orreryTilt" min="0" max="70" value="28">
+            <b id="tiltVal">28°</b>
+          </label>
+          <label class="date-row">
+            <span class="ctrl-label">时间</span>
+            <input type="range" id="orreryDate" min="0" max="1000" value="500">
+          </label>
+        </div>
+        <div class="orrery-info" id="orreryInfo">
+          <p class="orrery-hint">点击太阳或任意行星，查看实时轨道数据。</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 今晚观天 ================= -->
+<section class="section sec-tonight" id="tonight" data-nav="今晚观天">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-kicker">TONIGHT'S SKY</p>
+      <h2 class="sec-title">今晚观天指南</h2>
+      <p class="sec-desc">选一个城市、一个时刻，看看那时的头顶有什么。月相、行星高度、日出日落——天空每天都不一样，今晚只有一次。</p>
+    </header>
+    <p class="sec-quote reveal">抬头这件事，人类做了几十万年，还没做腻。</p>
+
+    <div class="tonight-bar reveal">
+      <label class="tb-item">城市
+        <select id="citySelect">
+          <option value="39.13,117.20" selected>天津</option>
+          <option value="39.90,116.40">北京</option>
+          <option value="31.23,121.47">上海</option>
+          <option value="23.13,113.26">广州</option>
+          <option value="30.57,104.07">成都</option>
+          <option value="34.34,108.94">西安</option>
+          <option value="45.80,126.53">哈尔滨</option>
+          <option value="43.83,87.62">乌鲁木齐</option>
+          <option value="29.65,91.10">拉萨</option>
+          <option value="18.25,109.51">三亚</option>
+        </select>
+      </label>
+      <label class="tb-item">观测时刻
+        <input type="range" id="timeSlider" min="18" max="30" value="21" step="0.25">
+        <b id="timeVal">21:00</b>
+      </label>
+      <span class="tb-note" id="tzNote">全部时间为北京时间 (UTC+8)</span>
+    </div>
+
+    <div class="tonight-cards">
+      <div class="tcard tcard-moon reveal">
+        <h3>月相</h3>
+        <div class="moon-visual">
+          <svg id="moonSvg" viewBox="0 0 120 120" width="130" height="130" aria-label="月相图">
+            <defs>
+              <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255,244,214,0.25)"/>
+                <stop offset="100%" stop-color="rgba(255,244,214,0)"/>
+              </radialGradient>
+            </defs>
+            <circle cx="60" cy="60" r="56" fill="url(#moonGlow)"/>
+            <circle id="moonDark" cx="60" cy="60" r="42" fill="#141a2a" stroke="rgba(148,163,184,0.25)"/>
+            <path id="moonLit" d="" fill="#f5ead0"/>
+          </svg>
+        </div>
+        <div class="moon-meta">
+          <b id="moonPhaseName">—</b>
+          <p>月龄 <b id="moonAge">—</b> 天 · 照亮 <b id="moonIllum">—</b></p>
+          <p>月出 <b id="moonRise">—</b> · 月落 <b id="moonSet">—</b></p>
+        </div>
+      </div>
+      <div class="tcard tcard-sun reveal">
+        <h3>太阳</h3>
+        <div class="sun-meta">
+          <p>日出 <b id="sunRise">—</b></p>
+          <p>日落 <b id="sunSet">—</b></p>
+          <p>正午 <b id="sunNoon">—</b></p>
+          <p>暗夜时长 <b id="darkWindow">—</b></p>
+        </div>
+      </div>
+      <div class="tcard tcard-tip reveal">
+        <h3>观测建议</h3>
+        <p id="tipMain">—</p>
+        <p id="tipSub" class="tip-sub">—</p>
+      </div>
+    </div>
+
+    <div class="planet-table-wrap reveal">
+      <table class="planet-table">
+        <thead>
+          <tr><th>行星</th><th>视星等</th><th>所在方位</th><th>高度角</th><th>与太阳距角</th><th>状态</th></tr>
+        </thead>
+        <tbody id="planetTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="events-block reveal">
+      <h3 class="events-title">天象预告</h3>
+      <div class="event-grid" id="eventGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LIVE DEEP SPACE ================= -->
+<section class="section sec-live" id="live" data-nav="实时太空">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="sec-kicker">LIVE FROM SPACE</p>
+      <h2 class="sec-title">实时太空</h2>
+      <p class="sec-desc">地球正在自转，太阳正在活动，野火正在燃烧，火箭正在加注。这些不是历史数据，是此刻正在发生的事。</p>
+    </header>
+    <p class="sec-quote reveal">宇宙不需要观众，但它恰好有一个。</p>
+
+    <div class="live-shell reveal">
+      <div class="live-tabs" role="tablist">
+        <button class="ltab active" data-tab="earth" role="tab" aria-selected="true">🌍 地球回望</button>
+        <button class="ltab" data-tab="events" role="tab" aria-selected="false">🔥 地球事件</button>
+        <button class="ltab" data-tab="sun" role="tab" aria-selected="false">☀️ 太阳活动</button>
+        <button class="ltab" data-tab="launch" role="tab" aria-selected="false">🚀 全球发射</button>
+        <button class="ltab" data-tab="neo" role="tab" aria-selected="false">☄ 小行星雷达</button>
+        <button class="ltab" data-tab="exo" role="tab" aria-selected="false">🪐 系外行星图鉴</button>
+      </div>
+
+      <!-- 地球 -->
+      <div class="live-panel active" id="panel-earth">
+        <div class="earth-stage">
+          <img id="epicImg" alt="DSCOVR 卫星拍摄的地球全圆盘" src="assets/img/epic/epic_01.jpg">
+          <div class="earth-badge" id="epicTime">—</div>
+        </div>
+        <div class="earth-side">
+          <p class="epic-date" id="epicDate">—</p>
+          <p class="epic-caption">这颗卫星停在太阳与地球之间的引力平衡点、距地球约 150 万公里处，每 1–2 小时回望一次地球。NASA 按天发布这些影像，通常比实时晚 1–3 天——下面这条时间轴，是最近一个完整观测日里的 8 个瞬间。</p>
+          <input type="range" id="epicSlider" min="0" max="7" value="0" step="1">
+          <div class="epic-ctrl">
+            <button id="epicPlay" class="btn btn-primary">▶ 播放一天</button>
+            <span class="epic-meta" id="epicMeta">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 太阳活动 -->
+      <div class="live-panel" id="panel-sun">
+        <div class="sun-stage">
+          <img id="sunImg" src="assets/img/sun/sun_0193.jpg" alt="NASA SDO 卫星拍摄的太阳全日面">
+          <div class="sun-waves" id="sunWaves" role="group" aria-label="观测波段"></div>
+        </div>
+        <div class="sun-side">
+          <p class="neo-hint">NASA <strong>SDO</strong> 卫星每 15 分钟拍一次太阳。下面那条曲线是 NOAA 测到的<strong>地磁 Kp 指数</strong>——数值越高，越可能出现极光。</p>
+          <canvas id="swCanvas" width="720" height="250"></canvas>
+          <div class="sw-stats" id="swStats"></div>
+        </div>
+      </div>
+
+      <!-- 全球发射 -->
+      <div class="live-panel" id="panel-launch">
+        <div class="launch-stage">
+          <ul class="launch-list" id="launchList"></ul>
+        </div>
+        <div class="launch-side">
+          <p class="neo-hint">排队中的发射，来自<strong>全球各家航天机构</strong>——SpaceX、中国航天、Rocket Lab、ISRO、ULA、阿丽亚娜。时间为北京时间。</p>
+          <div class="launch-stats" id="launchStats"></div>
+          <div class="launch-agencies" id="launchAgencies"></div>
+        </div>
+      </div>
+
+      <!-- 小行星 -->
+      <div class="live-panel" id="panel-neo">
+        <div class="neo-stage">
+          <canvas id="neoCanvas" width="780" height="600"></canvas>
+          <div class="neo-tip" id="neoTip" hidden></div>
+        </div>
+        <div class="neo-side">
+          <p class="neo-hint">半径是<strong>最近距离</strong>（对数刻度，最外圈 0.1 AU），角度是<strong>接近日期</strong>。虚线圆是月球轨道——落进圈里的，比月亮离我们还近。</p>
+          <div class="neo-stats" id="neoStats"></div>
+          <ul class="neo-list" id="neoList"></ul>
+        </div>
+      </div>
+
+      <!-- 系外行星 -->
+      <div class="live-panel" id="panel-exo">
+        <div class="exo-stage">
+          <canvas id="exoCanvas" width="900" height="540"></canvas>
+          <div class="neo-tip" id="exoTip" hidden></div>
+        </div>
+        <div class="exo-side">
+          <p class="neo-hint">横轴是公转周期、纵轴是行星半径（均为对数刻度），颜色代表发现方法。这里只画出了已有半径测量的行星——剩下那些只知道质量、还算不出大小的，暂时没有位置。</p>
+          <div class="exo-legend" id="exoLegend"></div>
+          <div class="exo-stats" id="exoStats"></div>
+        </div>
+      </div>
+
+      <!-- 地球事件 -->
+      <div class="live-panel" id="panel-events">
+        <div class="eo-stage">
+          <canvas id="eoCanvas" width="900" height="480"></canvas>
+          <div class="neo-tip" id="eoTip" hidden></div>
+        </div>
+        <div class="eo-side">
+          <p class="neo-hint">NASA EONET 每天从卫星观测里挑出<strong>正在发生的自然事件</strong>——野火、热带风暴、海冰。点上的位置就是事件中心的经纬度。</p>
+          <div class="eo-legend" id="eoLegend"></div>
+          <ul class="neo-list" id="eoList"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section class="section sec-about" id="about" data-nav="关于数据">
+  <div class="wrap about-grid">
+    <div class="reveal">
+      <p class="sec-kicker">ABOUT THE DATA</p>
+      <h2 class="sec-title">关于数据</h2>
+      <p>这里的每一幅影像、每一组坐标，都来自各国航天机构与天文数据中心公开发布的一手资料。我们不生产数据，只负责把它整理成看得懂的样子。</p>
+      <p>目前收录 <b>189 幅影像</b>、<b>6 段动态影像</b>、<b>6050 颗</b>已确认系外行星，以及持续更新的太阳活动、地球自然事件与全球发射日程。</p>
+      <p><b>数据来源</b>：NASA（影像与视频、EPIC 地球、SDO 太阳、EONET 事件、系外行星档案）、JPL（小行星接近与轨道要素）、NOAA 空间天气预测中心（地磁指数与太阳风）、The Space Devs（全球发射日程）。</p>
+      <p>「实时太阳系仪」与「今晚观天指南」由站内天文引擎实时解算：行星位置基于 JPL 轨道要素，误差小于 0.1°；月相与日月出没采用国际通行的天文算法。定位为科普演示，不作专业观测依据。</p>
+      <p>NASA 提供的影像与音视频资料多属公共领域，可自由使用。本站仅作展示与可视化，版权归 NASA 及相关贡献者所有。</p>
+    </div>
+    <dl class="about-facts reveal">
+      <div><dt>数据来源</dt><dd>8 个权威机构</dd></div>
+      <div><dt>影像档案</dt><dd>189 幅 + 6 段</dd></div>
+      <div><dt>行星数据</dt><dd>6050 颗系外行星</dd></div>
+      <div><dt>更新频率</dt><dd>持续更新</dd></div>
+    </dl>
+  </div>
+  <div class="wrap">
+    <p class="sec-quote reveal" style="margin-top:var(--sp-7)">数据是冷的，但每一条背后，都有一个把望远镜对准天空的人。</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-grid">
+    <div>
+      <p class="footer-logo">寰宇 COSMOS</p>
+      <p class="footer-note">汇聚全球航天机构公开数据的宇宙影像档案 · 无广告、无追踪。</p>
+    </div>
+    <div class="footer-meta">
+      <p>数据更新于 <b id="fetchTime">—</b></p>
+      <p>影像来源：NASA Image and Video Library</p>
+      <p>Public data courtesy of NASA / JPL / NOAA / The Space Devs</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= LIGHTBOX ================= -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="影像详情" hidden>
+  <div class="lightbox-backdrop" id="lbBackdrop"></div>
+  <figure class="lightbox-stage">
+    <button class="lb-close" id="lbClose" aria-label="关闭">✕</button>
+    <div class="lb-img-wrap">
+      <button class="lb-nav lb-prev" id="lbPrev" aria-label="上一张">‹</button>
+      <div class="lb-spinner" id="lbSpinner" hidden aria-label="加载中"><span></span></div>
+      <img id="lbImg" src="" alt="">
+      <button class="lb-nav lb-next" id="lbNext" aria-label="下一张">›</button>
+    </div>
+    <div class="lb-strip" id="lbStrip" hidden aria-label="缩略图导航"></div>
+    <figcaption class="lb-info">
+      <div class="lb-info-main">
+        <b id="lbTitle"></b>
+        <p id="lbDesc"></p>
+      </div>
+      <div class="lb-info-side">
+        <span id="lbCat" class="lb-tag"></span>
+        <p id="lbMeta"></p>
+        <p id="lbCount" class="lb-count"></p>
+      </div>
+    </figcaption>
+  </figure>
+</div>
+
+<button class="to-top" id="toTop" aria-label="回到顶部">↑</button>
+
+<script src="assets/data/data.js"></script>
+<script src="assets/data/live.js"></script>
+<script src="assets/data/extra.js"></script>
+<script src="assets/data/global.js"></script>
+<script src="assets/js/astro.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/gallery.js"></script>
+<script src="assets/js/solar.js"></script>
+<script src="assets/js/orrery.js"></script>
+<script src="assets/js/sky.js"></script>
+<script src="assets/js/videos.js"></script>
+<script src="assets/js/live.js"></script>
+</body>
+</html>

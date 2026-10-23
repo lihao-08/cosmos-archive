@@ -1,0 +1,89 @@
+name: 更新太空数据并部署
+
+on:
+  # 每天 UTC 22:00（北京时间次日 06:00）自动更新
+  schedule:
+    - cron: "0 22 * * *"
+  # 允许手动触发
+  workflow_dispatch:
+  # 推送代码时也部署（不更新数据）
+  push:
+    branches: [main]
+
+# 需要写仓库权限（提交数据变更）和 Pages 部署权限
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# 同一时间只跑一个，避免并发提交冲突
+concurrency:
+  group: cosmos-update
+  cancel-in-progress: false
+
+jobs:
+  # ---------- 抓取数据 ----------
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 安装依赖
+        run: pip install --quiet pillow
+
+      - name: 更新太空数据
+        id: fetch
+        run: |
+          python _tools/daily_update.py
+        continue-on-error: true
+
+      - name: 提交数据变更
+        run: |
+          git config user.name "cosmos-bot"
+          git config user.email "cosmos-bot@users.noreply.github.com"
+          git add cosmos-site/assets/data cosmos-site/assets/img
+          if git diff --staged --quiet; then
+            echo "数据无变化，跳过提交"
+          else
+            git commit -m "chore: 更新太空数据 [skip ci]"
+            git push
+          fi
+
+      - name: 记录结果
+        run: |
+          if [ "${{ steps.fetch.outcome }}" != "success" ]; then
+            echo "::warning::抓取脚本返回非零（部分数据源可能不可用，已保留旧数据）"
+          fi
+
+  # ---------- 部署到 GitHub Pages ----------
+  deploy:
+    needs: update
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+        with:
+          # 取最新提交（上一步可能刚提交了数据）
+          ref: main
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v5
+
+      - name: 打包站点
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: cosmos-site
+
+      - name: 部署
+        id: deployment
+        uses: actions/deploy-pages@v4

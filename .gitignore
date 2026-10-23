@@ -1,0 +1,30 @@
+# ---- 站点数据（必须提交）----
+# cosmos-site/assets/img 与 assets/data 是站点内容，完整保留
+
+# ---- 本地工具目录：只保留抓取脚本 ----
+_tools/*
+!_tools/daily_update.py
+!_tools/fetch_live.py
+!_tools/fetch_global.py
+!_tools/fetch_extra.py
+!_tools/localize_images.py
+_tools/__pycache__/
+
+# ---- WorkBuddy 运行时 ----
+.workbuddy/
+.wbapp_*.genie
+*.log
+
+# ---- 系统与编辑器 ----
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+venv/
+.venv/

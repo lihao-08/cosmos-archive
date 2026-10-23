@@ -100,7 +100,16 @@
       <p class="sec-desc">恒星死亡时抛出的尘埃，会在几万年后重新聚成新的太阳。这里收藏的每一帧，都是某个世界临终或初生的瞬间。</p>
     </header>
     <p class="sec-quote reveal">光在宇宙里走了一万年，我们只用一眼就看完了。</p>
-    <div class="chips" id="chips-deep" role="tablist" aria-label="深空图库筛选"></div>
+    <div class="gallery-tools">
+      <div class="chips" id="chips-deep" role="tablist" aria-label="深空图库筛选"></div>
+      <label class="search-box">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path>
+        </svg>
+        <input type="search" id="searchDeep" placeholder="搜索影像、星云、天体…" aria-label="搜索影像" autocomplete="off">
+        <span class="search-count" id="searchCount"></span>
+      </label>
+    </div>
     <div class="grid" id="grid-deep"></div>
     <p class="grid-empty" id="empty-deep" hidden>该类目暂无影像。</p>
   </div>
@@ -506,6 +515,7 @@
     <figcaption class="lb-info">
       <div class="lb-info-main">
         <b id="lbTitle"></b>
+        <span class="lb-orig" id="lbOrig"></span>
         <p id="lbDesc"></p>
       </div>
       <div class="lb-info-side">

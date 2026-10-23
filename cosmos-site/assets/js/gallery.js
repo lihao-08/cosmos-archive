@@ -12,6 +12,10 @@
   var enc = C.enc || function (u) { return encodeURI(u || ""); };
 
   var DATA = window.NASA_DATA || { meta: {}, items: [] };
+
+  // 优先显示中文；数据里带 titleZh / descZh
+  function zhTitle(it) { return it.titleZh || it.title || ""; }
+  function zhDesc(it) { return it.descZh || it.desc || ""; }
   var ITEMS = DATA.items || [];
   if (!ITEMS.length) return;
 
@@ -23,14 +27,14 @@
     card.className = "card";
     card.setAttribute("role", "button");
     card.setAttribute("tabindex", "0");
-    card.setAttribute("aria-label", item.title + "（" + item.cat + "）");
+    card.setAttribute("aria-label", zhTitle(item) + "（" + item.cat + "）");
     card.dataset.k = idx % 8;
     card._item = item;
 
     var img = document.createElement("img");
     img.loading = "lazy";
     img.decoding = "async";
-    img.alt = item.title;
+    img.alt = zhTitle(item);
     img.src = enc(item.thumb || item.img);
     img.addEventListener("load", function () {
       img.classList.add("loaded");
@@ -51,7 +55,7 @@
     var cap = document.createElement("figcaption");
     cap.className = "card-cap";
     var b = document.createElement("b");
-    b.textContent = item.title;
+    b.textContent = zhTitle(item);
     var s = document.createElement("span");
     s.textContent = (item.date || "—") + (item.center ? " · " + item.center : "");
     cap.appendChild(b);
@@ -148,11 +152,34 @@
   buildGallery("grid-earth", ["地球", "极光"]);
   buildGallery("grid-legacy", ["航天员", "火箭", "月球"]);
 
-  /* ---------- 深空筛选 ---------- */
+  /* ---------- 深空筛选 + 搜索 ---------- */
   var chipsBox = $("#chips-deep");
   if (chipsBox && G_DEEP) {
     var cats = [];
     G_DEEP.list.forEach(function (it) { if (cats.indexOf(it.cat) < 0) cats.push(it.cat); });
+
+    var fState = { cat: null, q: "" };
+    var searchInput = $("#searchDeep");
+    var searchCount = $("#searchCount");
+
+    // 分类与关键词叠加过滤
+    function applyFilter() {
+      var q = fState.q.trim().toLowerCase();
+      var vis = G_DEEP.list.filter(function (it) {
+        if (fState.cat && it.cat !== fState.cat) return false;
+        if (!q) return true;
+        var hay = [it.titleZh, it.title, it.descZh, it.desc, it.cat, it.id, it.center]
+          .filter(Boolean).join(" ").toLowerCase();
+        return hay.indexOf(q) >= 0;
+      });
+      resetGallery(G_DEEP, vis);
+      var empty = $("#empty-deep");
+      if (empty) {
+        empty.hidden = vis.length > 0;
+        if (!vis.length) empty.textContent = q ? "没有匹配「" + fState.q + "」的影像。" : "该类目暂无影像。";
+      }
+      if (searchCount) searchCount.textContent = q ? vis.length + " 条" : "";
+    }
 
     function chip(label, cat) {
       var b = document.createElement("button");
@@ -167,22 +194,41 @@
         });
         b.classList.add("active");
         b.setAttribute("aria-pressed", "true");
-        var vis = cat ? G_DEEP.list.filter(function (i) { return i.cat === cat; }) : G_DEEP.list.slice();
-        resetGallery(G_DEEP, vis);
-        var empty = $("#empty-deep");
-        if (empty) empty.hidden = vis.length > 0;
+        fState.cat = cat;
+        applyFilter();
       });
       b.setAttribute("aria-pressed", cat ? "false" : "true");
       chipsBox.appendChild(b);
     }
     chip("全部", null);
     cats.forEach(function (c) { chip(c, c); });
+
+    // 搜索：中英文标题、描述、类目、ID 都能命中
+    if (searchInput) {
+      var sTimer = 0;
+      searchInput.addEventListener("input", function () {
+        clearTimeout(sTimer);
+        sTimer = setTimeout(function () {
+          fState.q = searchInput.value;
+          applyFilter();
+        }, 160);
+      });
+      searchInput.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          searchInput.value = "";
+          fState.q = "";
+          applyFilter();
+          searchInput.blur();
+        }
+      });
+    }
   }
 
   /* ---------- 灯箱 ---------- */
   var lb = $("#lightbox");
   var lbImg = $("#lbImg");
   var lbTitle = $("#lbTitle");
+  var lbOrig = $("#lbOrig");
   var lbDesc = $("#lbDesc");
   var lbMeta = $("#lbMeta");
   var lbCat = $("#lbCat");
@@ -213,10 +259,14 @@
       lbImg.classList.add("ready");
     };
     loader.src = enc(it.img);
-    lbImg.alt = it.title;
+    lbImg.alt = zhTitle(it);
 
-    lbTitle.textContent = it.title;
-    lbDesc.textContent = it.desc || "（暂无详细说明）";
+    lbTitle.textContent = zhTitle(it);
+    if (lbOrig) {
+      // 英文原名保留为副标题，方便追溯
+      lbOrig.textContent = (it.titleZh && it.title && it.titleZh !== it.title) ? it.title : "";
+    }
+    lbDesc.textContent = zhDesc(it) || "（暂无详细说明）";
     lbCat.textContent = it.cat;
     lbMeta.textContent = [
       it.date ? "日期 " + it.date : "",
@@ -251,7 +301,7 @@
         var b = document.createElement("button");
         b.type = "button";
         b.className = "lb-thumb" + (idx === lbState.idx ? " active" : "");
-        b.setAttribute("aria-label", "第 " + (idx + 1) + " 张：" + it.title);
+        b.setAttribute("aria-label", "第 " + (idx + 1) + " 张：" + zhTitle(it));
         var im = document.createElement("img");
         im.loading = "lazy";
         im.src = enc(it.thumb || it.img);

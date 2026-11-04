@@ -8,6 +8,7 @@
 
   var C = window.COSMOS || {};
   var $ = C.$ || function (s, c) { return (c || document).querySelector(s); };
+  var toW = C.webp || function (u) { return u; };
 
   var EXTRA = window.EXTRA;
   var grid = $("#videoGrid");
@@ -61,7 +62,7 @@
     poster.className = "vc-poster";
     var img = document.createElement("img");
     img.loading = "lazy";
-    img.src = v.poster;
+    img.src = toW(v.poster);
     img.alt = "";
     poster.appendChild(img);
 

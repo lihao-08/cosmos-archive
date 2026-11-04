@@ -8,6 +8,8 @@ _tools/*
 !_tools/fetch_global.py
 !_tools/fetch_extra.py
 !_tools/localize_images.py
+# workflow 每天调用，生成新增图片的 WebP 副本
+!_tools/to_webp.py
 _tools/__pycache__/
 
 # ---- WorkBuddy 运行时 ----

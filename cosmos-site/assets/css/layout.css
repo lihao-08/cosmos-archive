@@ -11,8 +11,8 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 55% 42% at 10% 16%, rgba(139, 92, 246, 0.10), transparent 70%),
-    radial-gradient(ellipse 48% 38% at 92% 30%, rgba(56, 189, 248, 0.08), transparent 70%),
+    radial-gradient(ellipse 55% 42% at 10% 16%, rgba(216, 166, 87, 0.10), transparent 70%),
+    radial-gradient(ellipse 48% 38% at 92% 30%, rgba(111, 199, 216, 0.08), transparent 70%),
     radial-gradient(ellipse 60% 45% at 50% 105%, rgba(226, 114, 91, 0.05), transparent 70%);
 }
 
@@ -89,7 +89,7 @@ body::before {
   white-space: nowrap;
 }
 .nav-links a:hover { color: var(--text); background: var(--panel); }
-.nav-links a.active { color: #fff; background: rgba(139, 92, 246, 0.18); }
+.nav-links a.active { color: #fff; background: rgba(216, 166, 87, 0.18); }
 
 .nav-burger {
   display: none;
@@ -125,7 +125,11 @@ body::before {
 .hero-bg {
   position: absolute;
   inset: -6%;
-  background: url("../img/hero-pillars.jpg") center / cover no-repeat;
+  background: url("../img/hero-pillars.jpg") center / cover no-repeat; /* 旧浏览器回退 */
+  background-image: image-set(
+    url("../img/hero-pillars.webp") type("image/webp"),
+    url("../img/hero-pillars.jpg") type("image/jpeg")
+  );
   filter: saturate(1.15);
   opacity: 0.5;
   animation: heroDrift 40s ease-in-out infinite alternate;
@@ -160,7 +164,7 @@ body::before {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 80px rgba(139, 92, 246, 0.35);
+  text-shadow: 0 0 80px rgba(216, 166, 87, 0.35);
   animation: fadeUp 1s var(--ease) 0.25s both;
 }
 .hero-sub {
@@ -230,7 +234,7 @@ body::before {
   text-align: center;
   transition: transform 0.35s var(--ease), border-color 0.35s;
 }
-.stat:hover { transform: translateY(-4px); border-color: rgba(139, 92, 246, 0.45); }
+.stat:hover { transform: translateY(-4px); border-color: rgba(216, 166, 87, 0.45); }
 .stat b {
   display: block;
   font-size: clamp(28px, 4vw, 40px);
@@ -317,7 +321,7 @@ body::before {
   backdrop-filter: blur(8px);
 }
 .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
-.to-top:hover { background: rgba(139, 92, 246, 0.4); }
+.to-top:hover { background: rgba(216, 166, 87, 0.4); }
 
 
 /* ---------- 章节点导航（长页面的快速定位） ---------- */
@@ -368,7 +372,7 @@ body::before {
 .dotnav a.active {
   background: var(--violet);
   transform: scale(1.35);
-  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.16);
+  box-shadow: 0 0 0 4px rgba(216, 166, 87, 0.16);
 }
 
 @media (max-width: 1180px) {

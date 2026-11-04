@@ -33,7 +33,7 @@
   cursor: pointer;
   transition: background 0.25s;
 }
-.bar-row:hover, .bar-row.hot { background: rgba(139, 92, 246, 0.1); }
+.bar-row:hover, .bar-row.hot { background: rgba(216, 166, 87, 0.1); }
 .bar-name { font-size: var(--fs-body-s); color: #c9d3e6; white-space: nowrap; }
 .bar-track {
   height: 18px;
@@ -76,7 +76,7 @@
   font-variant-numeric: tabular-nums;
 }
 .solar-table tbody tr { transition: background 0.25s; cursor: pointer; }
-.solar-table tbody tr:hover { background: rgba(139, 92, 246, 0.1); }
+.solar-table tbody tr:hover { background: rgba(216, 166, 87, 0.1); }
 .solar-table tbody tr:last-child td { border-bottom: none; }
 .solar-table .pl-name { display: flex; align-items: center; gap: 9px; color: #fff; font-weight: 600; }
 .pl-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 8px currentColor; }
@@ -103,7 +103,7 @@
   position: absolute;
   top: 9px; left: 2%; right: 2%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), rgba(56, 189, 248, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(216, 166, 87, 0.5), rgba(111, 199, 216, 0.5), transparent);
 }
 .tl-item { position: relative; padding: 30px 14px 0; text-align: center; }
 .tl-item::before {
@@ -117,7 +117,7 @@
   border: 2px solid var(--violet-soft);
   transition: transform 0.3s var(--ease), box-shadow 0.3s;
 }
-.tl-item:hover::before { transform: scale(1.35); box-shadow: 0 0 14px rgba(139, 92, 246, 0.8); }
+.tl-item:hover::before { transform: scale(1.35); box-shadow: 0 0 14px rgba(216, 166, 87, 0.8); }
 .tl-year {
   display: block;
   font-size: var(--fs-h3);
@@ -143,7 +143,7 @@
 .orrery-stage {
   position: relative;
   background:
-    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(139, 92, 246, 0.07), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(216, 166, 87, 0.07), transparent 70%),
     #060a16;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -201,7 +201,7 @@
 .orrery-focus {
   position: relative;
   background:
-    radial-gradient(circle at 50% 45%, rgba(139, 92, 246, 0.1), transparent 68%),
+    radial-gradient(circle at 50% 45%, rgba(216, 166, 87, 0.1), transparent 68%),
     var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -269,10 +269,10 @@
   transition: all 0.25s;
   font-family: var(--font-sans);
 }
-.spd:hover { color: var(--text); border-color: rgba(56, 189, 248, 0.5); }
+.spd:hover { color: var(--text); border-color: rgba(111, 199, 216, 0.5); }
 .spd.active {
   color: #fff;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.85), rgba(139, 92, 246, 0.8));
+  background: linear-gradient(135deg, rgba(111, 199, 216, 0.85), rgba(216, 166, 87, 0.8));
   border-color: transparent;
 }
 .tilt-row, .date-row { display: flex; align-items: center; gap: 10px; }
@@ -284,7 +284,7 @@ input[type="range"] {
   appearance: none;
   height: 4px;
   border-radius: 2px;
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.6), rgba(56, 189, 248, 0.6));
+  background: linear-gradient(90deg, rgba(216, 166, 87, 0.6), rgba(111, 199, 216, 0.6));
   outline: none;
   cursor: pointer;
 }
@@ -294,7 +294,7 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   background: #fff;
   border: 2px solid var(--violet);
-  box-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
+  box-shadow: 0 0 10px rgba(216, 166, 87, 0.6);
   cursor: grab;
 }
 input[type="range"]::-moz-range-thumb {
@@ -379,7 +379,7 @@ input[type="range"]::-moz-range-thumb {
 .moon-meta b { color: #e8dfc8; }
 .sun-meta p { font-size: var(--fs-body-s); color: var(--muted); line-height: var(--lh-loose); }
 .sun-meta b { color: #ffd34d; font-variant-numeric: tabular-nums; font-weight: 600; }
-.tcard-tip { background: linear-gradient(160deg, rgba(139, 92, 246, 0.12), rgba(56, 189, 248, 0.06)), var(--panel); }
+.tcard-tip { background: linear-gradient(160deg, rgba(216, 166, 87, 0.12), rgba(111, 199, 216, 0.06)), var(--panel); }
 .tcard-tip p { font-size: var(--fs-body-s); color: #cdd8ee; line-height: var(--lh-loose); }
 .tcard-tip .tip-sub { color: var(--faint); font-size: var(--fs-caption); margin-top: 8px; }
 
@@ -593,14 +593,14 @@ input[type="range"]::-moz-range-thumb {
   width: 15px; height: 15px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.28);
+  box-shadow: 0 0 0 4px rgba(111, 199, 216, 0.28);
   cursor: grab;
 }
 #epicSlider::-moz-range-thumb {
   width: 15px; height: 15px;
   border: 0; border-radius: 50%;
   background: #fff;
-  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.28);
+  box-shadow: 0 0 0 4px rgba(111, 199, 216, 0.28);
 }
 .epic-ctrl { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .epic-ctrl .btn { font-size: var(--fs-body-s); padding: 9px 16px; }
@@ -613,7 +613,7 @@ input[type="range"]::-moz-range-thumb {
   width: 100%;
   height: auto;
   border-radius: 12px;
-  background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(56, 189, 248, 0.05), transparent 72%), #02040c;
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(111, 199, 216, 0.05), transparent 72%), #02040c;
   cursor: crosshair;
 }
 .neo-tip {

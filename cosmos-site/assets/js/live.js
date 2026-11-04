@@ -10,6 +10,8 @@
   var $ = C.$ || function (s) { return document.querySelector(s); };
   var $$ = C.$$ || function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
 
+  var toW = C.webp || function (u) { return u; };
+
   var LIVE = window.LIVE;
   if (!LIVE) {
     console.warn("[live] 缺少 assets/data/live.js，请先运行 _tools/fetch_live.py");
@@ -91,7 +93,8 @@
         img.src = pre.src;
         img.classList.remove("swapping");
       };
-      pre.src = f.src;
+      pre.onerror = function () { this.onerror = null; this.src = f.src; };
+      pre.src = toW(f.src);
       timeBadge.textContent = f.t + " UTC";
       slider.value = String(idx);
       var latTxt = Math.abs(f.lat).toFixed(1) + "°" + (f.lat >= 0 ? "N" : "S");
@@ -659,7 +662,7 @@
           $$(".sw-btn", sunWaveBox).forEach(function (x) { x.classList.remove("active"); });
           b.classList.add("active");
           var w = waves[parseInt(b.getAttribute("data-i"), 10)];
-          if (w && sunImg) sunImg.src = w.src;
+          if (w && sunImg) sunImg.src = toW(w.src);
         });
       });
     }

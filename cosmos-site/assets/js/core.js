@@ -12,6 +12,13 @@ window.COSMOS = (function () {
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
   function enc(url) { return encodeURI(url || ""); }
   function esc(s) { return String(s == null ? "" : s); }
+
+  /* WebP 路径改写：数据文件里存的是 .jpg，前端统一换成 .webp。
+     文件缺失时由 boot.js 的捕获阶段 error 监听自动回退到 .jpg。 */
+  function webp(u) {
+    var v = String(u || "");
+    return /\.(jpe?g|png)$/i.test(v) ? v.replace(/\.(jpe?g|png)$/i, ".webp") : v;
+  }
   function on(el, type, fn, opts) { if (el) el.addEventListener(type, fn, opts); }
   function raf(fn) { return window.requestAnimationFrame(fn); }
 
@@ -317,6 +324,6 @@ window.COSMOS = (function () {
 
   return {
     $: $, $$: $$, clamp: clamp, enc: enc, esc: esc, on: on, raf: raf,
-    reduceMotion: reduceMotion, observeReveal: observeReveal
+    reduceMotion: reduceMotion, observeReveal: observeReveal, webp: webp
   };
 })();

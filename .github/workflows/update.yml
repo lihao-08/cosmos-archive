@@ -44,6 +44,9 @@ jobs:
           python _tools/daily_update.py
         continue-on-error: true
 
+      - name: 生成 WebP 副本（增量，只处理当天新增图片）
+        run: python _tools/to_webp.py
+
       - name: 提交数据变更
         run: |
           git config user.name "cosmos-bot"

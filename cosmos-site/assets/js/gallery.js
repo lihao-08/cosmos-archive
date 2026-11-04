@@ -10,6 +10,7 @@
   var $ = C.$ || function (s, c) { return (c || document).querySelector(s); };
   var $$ = C.$$ || function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   var enc = C.enc || function (u) { return encodeURI(u || ""); };
+  var toW = C.webp || function (u) { return u; };
 
   var DATA = window.NASA_DATA || { meta: {}, items: [] };
 
@@ -35,7 +36,7 @@
     img.loading = "lazy";
     img.decoding = "async";
     img.alt = zhTitle(item);
-    img.src = enc(item.thumb || item.img);
+    img.src = enc(toW(item.thumb || item.img));
     img.addEventListener("load", function () {
       img.classList.add("loaded");
       card.classList.add("img-ready");
@@ -249,16 +250,23 @@
     if (lbSpinner) lbSpinner.hidden = false;
     lbImg.classList.remove("ready");
     var loader = new Image();
+    var triedJpg = false;
     loader.onload = function () {
       lbImg.src = loader.src;
       lbImg.classList.add("ready");
       if (lbSpinner) lbSpinner.hidden = true;
     };
     loader.onerror = function () {
+      // new Image() 不在 DOM 里，收不到 boot.js 的全局回退，这里单独兜一层
+      if (!triedJpg && /\.webp$/i.test(loader.src)) {
+        triedJpg = true;
+        loader.src = enc(it.img);
+        return;
+      }
       if (lbSpinner) lbSpinner.hidden = true;
       lbImg.classList.add("ready");
     };
-    loader.src = enc(it.img);
+    loader.src = enc(toW(it.img));
     lbImg.alt = zhTitle(it);
 
     lbTitle.textContent = zhTitle(it);
@@ -304,7 +312,7 @@
         b.setAttribute("aria-label", "第 " + (idx + 1) + " 张：" + zhTitle(it));
         var im = document.createElement("img");
         im.loading = "lazy";
-        im.src = enc(it.thumb || it.img);
+        im.src = enc(toW(it.thumb || it.img));
         im.alt = "";
         b.appendChild(im);
         b.addEventListener("click", function () { lbState.idx = idx; renderLb(); });

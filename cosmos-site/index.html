@@ -14,6 +14,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>漫游寰宇 · 基于 NASA 开放数据的宇宙影像档案</title>
 <meta name="description" content="寰宇 COSMOS：汇聚 NASA、JPL、NOAA 等全球航天机构公开数据的宇宙影像档案——深空影像、动态影像、实时太阳活动、全球发射日程、近地小行星与系外行星图鉴。">
+<!-- 提前取回首屏最重的两个资源：影像总表由 boot.js 动态注入，背景图由 CSS image-set 引用 -->
+<link rel="preload" as="script" href="assets/data/data.js">
+<link rel="preload" as="image" href="assets/img/hero-pillars.webp" type="image/webp">
 <link rel="stylesheet" href="assets/css/base.css">
 <link rel="stylesheet" href="assets/css/layout.css">
 <link rel="stylesheet" href="assets/css/gallery.css">

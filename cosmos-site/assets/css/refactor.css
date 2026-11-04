@@ -1,319 +1,484 @@
 /* ============================================================
-   寰宇 COSMOS · refactor.css — 第二版设计语言「观测档案」
+   寰宇 COSMOS · refactor.css — 第三版「观测控制台 / TELEMETRY ARCHIVE」
    ------------------------------------------------------------
-   这是一层覆盖式主题：重定义设计令牌，并改写导航 / 首屏 / 章节 /
-   卡片的呈现规则。基础 CSS 里的旧色值字面量已一并统一到新色板，
-   因此本文件只负责「版式与设计语言」，不再含颜色兜底。
+   设计依据（2026-11-04 外部调研，非凭感觉配色）
+   [1] webbtelescope.org / science.nasa.gov 实测：全幅深空图 +
+       超大左对齐 80px/700 实色白标题 + 面包屑；官方正文用浅色，
+       深色只留给影像区。ESA 实测：极简顶栏、等宽大写机构名、1px 细线。
+   [2] Curio《James Webb Telescope (2022)》与《Deep Space Observatory》：
+       双色（镜面金 / 电离青）、等宽遥测字、细钢网格、靠黑色负空间
+       而非阴影建立深度；红外数据按波长由青到金映射。
+   [3] Canemah《Macroscope Visual Language Specification》(2026)：
+       标本标签式图版（图片加框 + 下方等宽 caption bar 写编号/时间/来源）、
+       仪器括号 [ ]、坐标批注；明确禁用渐变按钮、玻璃拟态、霓虹强调、
+       多于一个字体系列；签名手法最多两个。
+   [4] WCAG 2.2 AA / 深色模式指南：正文 >=4.5:1、大字与 UI 边界 >=3:1；
+       底色用深灰而非纯黑、正文不用纯白、品牌色提亮降饱和、测合成色、
+       焦点指示器必须可见。
+   [5] 2026 趋势综述：深色为默认、大胆排版、微交互「感受到而非注意到」、
+       尊重 prefers-reduced-motion、性能优先，且不要一次追齐所有趋势。
 
-   设计意图
-   - 从「紫蓝发光玻璃」转为「深墨 + 铜金 + 细网格」的观测台档案感
-   - 中文优先：标题去掉渐变字，改实色暖白，提高正文对比度
-   - 12 个同构 section 用章节编号、顶部分割线、交替底色建立节奏
-   - 圆角收紧、发光收掉，让影像本身成为唯一的视觉主角
+   本版采用的两种签名手法（按 [3] 的建议不超过两个）：
+     A 标本标签式图版（卡片）   B 仪器括号 + 1px 钢网格标注（章节/顶栏）
+   色板与浏览器实测合成色均按 WCAG 相对亮度公式逐对验算，16 项全达标。
    ============================================================ */
 
 :root {
-  /* ---- 色彩：冷紫蓝 → 深墨 / 暖铜金 ---- */
-  --bg: #070a11;
-  --bg-2: #0b0f18;
-  --ink: #05070c;
+  color-scheme: dark;             /* [4] 让原生控件/滚动条跟随深色 */
 
-  --surface-1: rgba(232, 220, 194, 0.035);
-  --surface-2: rgba(232, 220, 194, 0.075);
-  --surface-3: #101620;
+  /* ---- 表面：深灰蓝，刻意不用纯黑 ---- */
+  --bg: #0e1318;
+  --bg-2: #141c23;
+  --ink: #0b1015;
+  --surface-1: #131c24;
+  --surface-2: #16202a;
+  --surface-3: #1b2732;
 
-  --line-soft: rgba(232, 220, 194, 0.09);
-  --line: rgba(232, 220, 194, 0.17);
-  --line-strong: rgba(232, 220, 194, 0.32);
+  /* ---- 文字：全部 >=4.5:1（对 #0e1318）---- */
+  --text: #e8eef2;         /* 15.95:1 */
+  --text-dim: #c4d0d8;     /* 11.88:1 */
+  --muted: #9fb0bc;        /*  8.36:1 */
+  --faint: #7f929e;        /*  5.78:1 */
 
-  --text: #f3f0e7;
-  --text-dim: #d8d3c6;
-  --muted: #a8a69e;      /* 原 #8b98ad 偏暗，导航/说明提亮 */
-  --faint: #7c7d7d;
+  /* ---- 线：区分「承载信息」与「纯装饰」[4] ---- */
+  --line-soft: #2a3740;    /* 装饰网格，低对比即可 */
+  --line: #5b6e7c;         /* 组件边界 3.53:1 / 面板 3.11:1，过 3:1 */
+  --line-strong: #8498a6;  /* 选中/焦点边界 */
+  --line-ui: #617585;      /* 输入/焦点，面板 3.45:1 */
 
-  --violet: #d8a657;      /* 主强调：铜金。沿用变量名，全站自动换色 */
-  --violet-soft: #ecc982;
-  --cyan: #6fc7d8;        /* 数据色：冰蓝，降饱和 */
-  --amber: #d8a657;
-  --mars: #d97a5e;
-  --earth: #5d9fd8;
+  /* ---- 双色系统：青为结构，金只作数据信号 [2] ---- */
+  --cyan: #7ad3e0;
+  --violet: #7ad3e0;       /* 兼容基础 CSS 的旧变量名 */
+  --violet-soft: #a9e6f0;
+  --amber: #e8b563;        /* 波长/状态信号，不再铺满全站 */
+  --green: #7fd6a2;        /* 遥测正常 */
+  --mars: #e08a72;
+  --earth: #6fa8dc;
+  --danger: #f08a7a;
 
-  --glow-violet: 0 6px 22px rgba(216, 166, 87, 0.16);
-  --glow-violet-lg: 0 12px 36px rgba(216, 166, 87, 0.24);
+  --glow-violet: none;
+  --glow-violet-lg: none;
 
-  /* ---- 圆角收紧：从柔和玻璃 → 硬朗档案 ---- */
-  --r-xs: 3px;
-  --r-sm: 4px;
-  --r-md: 6px;
-  --r-lg: 8px;
-  --r-xl: 10px;
+  /* ---- 零圆角：仪器精度 [3] ---- */
+  --r-xs: 0; --r-sm: 0; --r-md: 0; --r-lg: 0; --r-xl: 0;
+  --r-full: 999px;         /* 仅供按钮 pill [3] §9.1 */
 
-  /* ---- 中文排版：字距更紧、行高更舒展 ---- */
-  --ls-cn: 0.015em;
-  --ls-title: 0.06em;
-  --lh-body: 1.8;
+  /* ---- 排版：单一字体系列 + 等宽遥测层 ---- */
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Consolas, monospace;
+  --ls-label: 0.16em;
+  --ls-cn: 0.01em;
 }
 
 /* ============================================================
-   顶部导航：10 项不再是一团淡灰小字，改成带下划线状态的刻度条
+   全局：1px 钢网格 + 焦点可见 + 无阴影深度
+   ============================================================ */
+body { background: var(--bg); }
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--line-soft) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line-soft) 1px, transparent 1px);
+  background-size: 96px 96px;
+  opacity: 0.22;
+}
+::selection { background: rgba(122, 211, 224, 0.3); color: #fff; }
+
+/* [4] WCAG 2.4.7 / 1.4.11：焦点在深底上必须看得见 */
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+  border-radius: 0;
+}
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: none;
+  border-color: var(--cyan) !important;
+  box-shadow: inset 0 0 0 2px var(--cyan);
+}
+
+/* 去掉所有发光/投影，深度改由细线与负空间承担 [2] */
+.btn, .chip, .card, .panel, .orrery-info, .stat { box-shadow: none; }
+
+/* ============================================================
+   顶栏：ESA 式极简 [1] + 等宽刻度
    ============================================================ */
 .nav {
-  background: rgba(7, 10, 17, 0.86);
-  border-bottom: 1px solid var(--line-soft);
-  backdrop-filter: blur(18px) saturate(1.2);
-  -webkit-backdrop-filter: blur(18px) saturate(1.2);
-  padding-top: 11px;
-  padding-bottom: 11px;
+  background: rgba(14, 19, 24, 0.94);
+  border-bottom: 1px solid var(--line-ui);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding-top: 9px;
+  padding-bottom: 9px;
 }
-.nav.scrolled,
-.nav.is-scrolled {
-  background: rgba(7, 10, 17, 0.95);
-  border-bottom-color: var(--line);
-}
-.nav-logo-text { color: var(--text); letter-spacing: 0.08em; }
-.nav-logo-text em {
-  color: var(--amber);
-  font-style: normal;
+.nav-logo-text {
   font-family: var(--font-mono);
-  font-size: 0.78em;
+  font-size: 11px;
   letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text);
 }
+.nav-logo-text em { color: var(--cyan); font-size: 0.9em; letter-spacing: 0.22em; }
 .nav-links { gap: 0; }
 .nav-links a {
-  position: relative;
-  color: #b6b4ac;                 /* 提亮，压过星空背景 */
-  font-size: 12.5px;
-  font-weight: 500;
-  padding: 9px 9px 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 9px 8px 10px;
   border-radius: 0;
   border-bottom: 2px solid transparent;
-  letter-spacing: 0.02em;
 }
-.nav-links a:hover {
-  color: var(--text);
-  background: transparent;
-  border-bottom-color: rgba(216, 166, 87, 0.45);
+.nav-links a:hover { color: var(--text); background: transparent; border-bottom-color: var(--line-strong); }
+.nav-links a.active, .nav-links a[aria-current="true"] {
+  color: var(--cyan); background: transparent; border-bottom-color: var(--cyan);
 }
-.nav-links a.active,
-.nav-links a[aria-current="true"] {
-  color: var(--amber);
-  background: transparent;
-  border-bottom-color: var(--amber);
+.nav-burger { border-radius: 0; border-color: var(--line-ui); }
+
+/* ============================================================
+   遥测状态条：只显示真实数据，不做装饰性假读数 [2][3]
+   ============================================================ */
+.telemetry-bar {
+  position: absolute;
+  top: 66px;
+  left: 0; right: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 3vw, 40px);
+  padding: 9px clamp(20px, 4vw, 56px);
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.telemetry-bar b { color: var(--text-dim); font-weight: 500; }
+.telemetry-bar .t-live { color: var(--green); }
+.telemetry-bar .t-live::before {
+  content: "";
+  display: inline-block;
+  width: 5px; height: 5px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  vertical-align: 1px;
+}
+.telemetry-bar .t-accent { color: var(--cyan); }
+@media (max-width: 760px) {
+  .telemetry-bar { top: 60px; font-size: 9px; gap: 14px; }
+  .telemetry-bar .t-hide-sm { display: none; }
 }
 
 /* ============================================================
-   首屏：实色暖白标题 + 铜金刻度标签 + 左右档案边注
+   首屏：Webb 式超大左对齐实色标题 [1]
    ============================================================ */
-.hero-bg { opacity: 0.42; filter: saturate(0.72) contrast(1.06); }
+.hero { justify-content: flex-start; }
+.hero-bg { opacity: 0.5; filter: saturate(0.62) contrast(1.1); }
 .hero-veil {
   background:
-    linear-gradient(180deg, rgba(7, 10, 17, 0.52) 0%, rgba(7, 10, 17, 0.18) 42%, var(--bg) 100%),
-    radial-gradient(ellipse at 50% 46%, transparent 28%, rgba(7, 10, 17, 0.62) 100%);
+    linear-gradient(90deg, rgba(11, 16, 21, 0.93) 0%, rgba(11, 16, 21, 0.72) 38%, rgba(11, 16, 21, 0.14) 78%),
+    linear-gradient(180deg, rgba(11, 16, 21, 0.5), transparent 30%, var(--bg) 100%);
 }
-.hero-title {
-  background: none;
-  -webkit-text-fill-color: #f6f2e8;
-  color: #f6f2e8;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.65);
+.hero-inner {
+  max-width: min(1120px, 94vw);
+  margin: 0;
+  padding: 150px 24px 90px clamp(24px, 7vw, 116px);
+  text-align: left;
 }
-.hero-kicker {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  color: var(--amber);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.3em;
-}
-.hero-kicker::before,
-.hero-kicker::after {
+/* 四角准星：纯几何签名，不写假坐标 [2] */
+.hero-inner::after {
   content: "";
-  width: 34px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--amber));
-  opacity: 0.7;
-}
-.hero-kicker::after { transform: rotate(180deg); }
-.hero-sub {
-  color: #cbc7bb;
-  font-size: clamp(15px, 1.2vw, 17px);
-  line-height: 1.95;
-}
-
-/* 首屏左右竖排边注：纯装饰，窄屏隐藏 */
-/* 首屏左右竖排边注：中文竖排才成立，英文竖排会像乱码，故只用中文 */
-.hero::before,
-.hero::after {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  writing-mode: vertical-rl;
-  font-family: var(--font-serif);
-  font-size: 12px;
-  letter-spacing: 0.32em;
-  color: rgba(216, 166, 87, 0.42);
-  pointer-events: none;
-  z-index: 2;
+  left: clamp(14px, 3vw, 48px);
+  top: 116px;
+  width: 15px; height: 15px;
+  border-left: 1px solid var(--cyan);
+  border-top: 1px solid var(--cyan);
+  opacity: 0.6;
 }
-.hero::before { content: "寰宇 · 宇宙影像档案 · 卷一"; left: clamp(16px, 3vw, 46px); }
-.hero::after  { content: "数据取自全球航天机构公开接口"; right: clamp(16px, 3vw, 46px); }
-@media (max-width: 1100px) { .hero::before, .hero::after { display: none; } }
-
-/* 按钮：去掉紫色发光，实心铜金 */
-.btn-primary {
-  background: var(--amber);
-  color: #17120a;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  box-shadow: 0 4px 18px rgba(216, 166, 87, 0.18);
-  border: 1px solid var(--amber);
+.hero-crumb {
+  display: block;
+  margin-bottom: 26px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--faint);
 }
-.btn-primary:hover { background: #edbf74; border-color: #edbf74; box-shadow: 0 6px 24px rgba(216, 166, 87, 0.3); }
-.btn-ghost {
-  border-color: rgba(232, 220, 194, 0.3);
+.hero-crumb em { color: var(--cyan); font-style: normal; }
+.hero-kicker {
+  display: inline-flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+.hero-kicker::before { content: "[ "; width: auto; height: 0; background: none; opacity: 1; }
+.hero-kicker::after  { content: " ]"; width: auto; height: 0; background: none; opacity: 1; transform: none; }
+.hero-title {
+  font-family: var(--font-sans);
+  font-size: clamp(58px, 8.6vw, 116px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+  margin-left: 0;
+  background: none;
+  -webkit-text-fill-color: var(--text);
+  color: var(--text);
+  text-shadow: none;
+  animation: none;
+}
+.hero-sub {
+  margin: 30px 0 0;
+  max-width: 48ch;
   color: var(--text-dim);
-  background: rgba(232, 220, 194, 0.03);
+  font-size: clamp(14px, 1.2vw, 16px);
+  line-height: 1.9;
+  text-align: left;
 }
-.btn-ghost:hover { border-color: var(--amber); color: var(--amber); background: rgba(216, 166, 87, 0.06); }
+.hero-cta { margin-top: 40px; justify-content: flex-start; }
+.hero-scroll { display: none; }
+
+/* 按钮：描边 pill、无渐变、无阴影，hover 只变边框/底色 [3] §9.1 / §11 */
+.btn {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border-radius: var(--r-full);
+  padding: 12px 24px;
+  transition: border-color .2s, background .2s, color .2s;
+}
+.btn-primary {
+  background: transparent;
+  color: var(--cyan);
+  border: 1px solid var(--cyan);
+  box-shadow: none;
+}
+.btn-primary:hover { background: rgba(122, 211, 224, 0.12); border-color: #a9e6f0; color: #d5f2f7; }
+.btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--line-ui); }
+.btn-ghost:hover { background: rgba(122, 211, 224, 0.07); border-color: var(--cyan); color: var(--text); }
 
 /* ============================================================
-   统计条：改成四栏刻度，数字用等宽体
+   统计条：等宽遥测读数
    ============================================================ */
 .stats {
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  background: rgba(232, 220, 194, 0.018);
+  border-top: 1px solid var(--line-ui);
+  border-bottom: 1px solid var(--line-ui);
+  background: var(--surface-1);
 }
-.stat .count {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  color: var(--text);
-  letter-spacing: -0.02em;
-}
-.stat span { color: var(--muted); letter-spacing: 0.12em; }
+.stat .count { font-family: var(--font-mono); font-weight: 500; color: var(--cyan); letter-spacing: -0.02em; }
+.stat span { font-family: var(--font-mono); color: var(--muted); letter-spacing: 0.12em; font-size: 10.5px; text-transform: uppercase; }
 
 /* ============================================================
-   章节节奏：沿用 base.css 已有的 sec 计数器，只换配色并补
-   顶部分割线与交替底色 —— 不另起 counter，避免编号错乱
+   章节：仪器括号 + 真实章节名批注（不新增 counter，沿用 base.css 的 sec）
    ============================================================ */
-main > section.section {
-  border-top: 1px solid var(--line-soft);
-}
-main > section.section:nth-of-type(even) {
-  background: linear-gradient(180deg, rgba(232, 220, 194, 0.016), rgba(232, 220, 194, 0) 62%);
-}
-main > section.section::before {
-  content: "";
+main > section.section { border-top: 1px solid var(--line-soft); }
+main > section.section:nth-of-type(even) { background: rgba(19, 28, 36, 0.55); }
+main > section.section[data-nav]::before {
+  content: "[ " attr(data-nav) " ]  /  OPEN DATA";
   position: absolute;
-  top: -1px;
-  left: 0;
-  width: 64px;
-  height: 1px;
-  background: var(--amber);
-  opacity: 0.72;
+  top: 18px;
+  right: clamp(16px, 4vw, 56px);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  color: var(--faint);
   pointer-events: none;
 }
-/* base.css 的 .sec-kicker::before 已负责 counter-increment + 编号，
-   这里只把编号与引导线染成铜金，保留原有排版结构 */
-.sec-kicker::before {
-  color: var(--amber);
-  font-family: var(--font-mono);
-  border-right-color: rgba(216, 166, 87, 0.42);
-}
-.sec-kicker::after { border-top-color: rgba(216, 166, 87, 0.22); }
 .sec-kicker {
-  color: var(--muted);
   font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.24em;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  color: var(--muted);
 }
-.sec-title {
-  color: var(--text);
-  letter-spacing: 0.045em;
+.sec-kicker::before {
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  border-right-color: var(--line-ui);
 }
-.sec-desc { color: #b9b6ad; }
+.sec-title { color: var(--text); font-weight: 700; letter-spacing: 0.01em; }
+.sec-desc { color: var(--text-dim); }
 .sec-quote {
-  border-left: 2px solid rgba(216, 166, 87, 0.55);
-  color: var(--text-dim);
+  border-left: 2px solid var(--cyan);
+  color: var(--muted);
   font-family: var(--font-serif);
 }
 
-/* 章节小标题统一加一道细线，强化「档案条目」感 */
 .chip {
-  border-radius: 3px;
-  letter-spacing: 0.02em;
-}
-.chip.active {
-  background: rgba(216, 166, 87, 0.14);
-  border-color: rgba(216, 166, 87, 0.55);
-  color: var(--amber);
-}
-.search-box { border-radius: 3px; }
-.search-count { color: var(--amber); font-family: var(--font-mono); }
-
-/* ============================================================
-   影像卡片：细边框 + 小圆角，让图片本身当主角
-   ============================================================ */
-.card {
-  border: 1px solid var(--line-soft);
-  border-radius: var(--r-sm);
-  overflow: hidden;
-  transition: border-color 0.35s var(--ease), transform 0.35s var(--ease);
-}
-.card:hover {
-  border-color: rgba(216, 166, 87, 0.5);
-  transform: translateY(-3px);
-}
-.card-cap b { font-weight: 600; letter-spacing: 0.02em; }
-
-/* ============================================================
-   数据仪表：面板边框提亮，标签统一等宽体
-   ============================================================ */
-.orrery-clock,
-.orrery-info,
-.sec-tonight .sky-panel,
-.sec-live .panel {
-  font-variant-numeric: tabular-nums;
-}
-
-/* 滚动进度条 / 章节圆点使用铜金 */
-.scroll-progress { background: var(--amber); }
-.dotnav a.active,
-.dotnav button.active { background: var(--amber); border-color: var(--amber); }
-
-/* 页脚 */
-.footer {
-  border-top: 1px solid var(--line);
+  border-radius: 0;
+  border-color: var(--line-ui);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  background: transparent;
   color: var(--muted);
 }
+.chip:hover { border-color: var(--cyan); color: var(--text); }
+.chip.active {
+  background: rgba(122, 211, 224, 0.1);
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: inset 0 0 0 1px var(--cyan);
+}
+.search-box { border-radius: 0; border-color: var(--line-ui); background: var(--surface-1); }
+.search-box:focus-within { border-color: var(--cyan); background: var(--surface-2); }
+.search-box input { font-family: var(--font-mono); font-size: 12px; }
+.search-count { color: var(--cyan); font-family: var(--font-mono); }
 
-/* 减少动态偏好：覆盖层不引入新动画，这里只兜底 */
+/* ============================================================
+   影像卡片：标本标签式图版 [3] §10.1B
+   图片在上有明确边界，编号/标题/时间/来源在下方独立等宽 caption bar。
+   只重排现有 DOM，不改 gallery.js，功能与分批渲染完全保留。
+   ============================================================ */
+.grid { counter-reset: plate; gap: 14px; }
+.card {
+  counter-increment: plate;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: auto;
+  border-radius: 0;
+  border: 1px solid var(--line);
+  background: var(--surface-1);
+  box-shadow: none;
+  transition: border-color .25s, opacity .6s var(--ease), transform .6s var(--ease);
+}
+.card.in { opacity: 1; transform: none; }
+.card:hover, .card:focus-visible { border-color: var(--cyan); box-shadow: none; }
+.card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  flex: none;
+  object-fit: cover;
+  display: block;
+  background: #0a0f14;
+  border-bottom: 1px solid var(--line-soft);
+  transition: filter .3s;
+}
+.card:hover img { transform: none; filter: brightness(1.1); }
+.card-veil { display: none; }
+.card::before { inset: 0 0 auto 0; height: calc(100% - 62px); }  /* 骨架只覆盖图版区 */
+.card-cap {
+  position: static;
+  transform: none;
+  opacity: 1;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 10px;
+  padding: 10px 12px 11px;
+  border-top: 1px solid var(--line-ui);
+  background: var(--surface-2);
+  min-height: 62px;
+  align-content: center;
+}
+.card-cap b {
+  grid-column: 1; grid-row: 1;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  -webkit-line-clamp: 1;
+}
+.card-cap::after {
+  content: "NO." counter(plate, decimal-leading-zero);
+  grid-column: 2; grid-row: 1;
+  align-self: center;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--cyan);
+  white-space: nowrap;
+}
+.card-cap span {
+  grid-column: 1 / -1; grid-row: 2;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.card-tag {
+  position: absolute;
+  top: 0; left: 0;
+  opacity: 1;
+  transform: none;
+  padding: 4px 8px;
+  border: 0;
+  border-right: 1px solid var(--line-ui);
+  border-bottom: 1px solid var(--line-ui);
+  border-radius: 0;
+  background: rgba(14, 19, 24, 0.9);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--cyan);
+}
+.card-tag::before { content: "[ "; }
+.card-tag::after  { content: " ]"; }
+
+/* ============================================================
+   数据仪表：青→金的波长渐变保留（[2] 的红外映射），其余去装饰
+   ============================================================ */
+.orrery-clock, .orrery-info, .solar-table, .sky-panel { font-variant-numeric: tabular-nums; }
+.orrery-clock, .orrery-info { font-family: var(--font-mono); letter-spacing: 0.04em; }
+.ltab, .speed-row button, .sky-tab { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; }
+.ltab.active, .speed-row button.active {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  background: rgba(122, 211, 224, 0.1);
+  box-shadow: none;
+}
+
+/* 滚动进度 / 章节圆点 / 页脚 */
+.scroll-progress { background: var(--cyan); height: 2px; }
+.dotnav a.active, .dotnav button.active { background: var(--cyan); border-color: var(--cyan); }
+.footer { border-top: 1px solid var(--line-ui); color: var(--muted); }
+.to-top { border-radius: 0; border-color: var(--line-ui); }
+
+/* ============================================================
+   灯箱：延续图版的清晰边界，英文原名仍是灰色副标题
+   ============================================================ */
+.lb-orig { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
+
+/* ============================================================
+   可访问性与响应式 [4][5]
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .card:hover { transform: none; }
   .hero-bg { animation: none; }
+  .card, .card img, .btn { transition: none; }
+  .reveal { opacity: 1 !important; transform: none !important; }
 }
-
-/* 窄屏：首屏刻度标签压到一行，副标题用 balance 避免孤立字 */
+@media (max-width: 900px) {
+  .hero-inner { padding-left: 28px; padding-top: 140px; }
+  .hero-title { font-size: clamp(48px, 11vw, 76px); }
+  main > section.section[data-nav]::before { display: none; }
+}
 @media (max-width: 640px) {
-  .hero-kicker {
-    font-size: 9.5px;
-    letter-spacing: 0.14em;
-    gap: 7px;
-    white-space: nowrap;
-  }
-  .hero-kicker::before,
-  .hero-kicker::after { width: 16px; }
-  .hero-sub { text-wrap: balance; font-size: 14px; line-height: 1.9; }
-  .hero-sub br { display: none; }   /* 窄屏让文字自然回流，避免硬换行造成碎行 */
-  .nav-links a { font-size: 12px; }
+  .hero-inner { padding: 132px 20px 70px; }
+  .hero-crumb { margin-bottom: 18px; font-size: 9.5px; }
+  .hero-kicker { font-size: 9px; letter-spacing: 0.16em; }
+  .hero-sub { text-wrap: balance; font-size: 14px; }
+  .hero-sub br { display: none; }
+  .hero-inner::after { display: none; }
+  .card-cap { padding: 9px 10px; }
+  .card-cap b { font-size: 12px; }
+  .grid { gap: 10px; }
 }
-
-/* 打印：去掉装饰性边注与大水印，保留内容 */
 @media print {
-  .hero::before, .hero::after,
-  main > section.section::before { display: none; }
-  .nav, .dotnav, .to-top, .scroll-progress { display: none !important; }
+  body::before, .telemetry-bar, .nav, .dotnav, .to-top, .scroll-progress,
+  main > section.section[data-nav]::before { display: none !important; }
+  .hero-title { -webkit-text-fill-color: #000; color: #000; }
+  .reveal { opacity: 1 !important; transform: none !important; }
 }

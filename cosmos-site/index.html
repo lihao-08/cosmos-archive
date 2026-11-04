@@ -39,8 +39,8 @@
 <nav class="nav" id="nav">
   <a class="nav-logo" href="#home">
     <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
-      <circle cx="16" cy="16" r="8.5" fill="#d8a657"/>
-      <circle cx="13" cy="13" r="2.6" fill="#f0d9a8" opacity=".7"/>
+      <circle cx="16" cy="16" r="8.5" fill="#7ad3e0"/>
+      <circle cx="13" cy="13" r="2.6" fill="#d5f2f7" opacity=".7"/>
       <ellipse cx="16" cy="16" rx="14" ry="4.4" fill="none" stroke="#38bdf8" stroke-width="1.8" transform="rotate(-20 16 16)"/>
     </svg>
     <span class="nav-logo-text">寰宇<em>COSMOS</em></span>
@@ -68,7 +68,18 @@
 <header class="hero" id="home" data-nav="首页">
   <div class="hero-bg" aria-hidden="true"></div>
   <div class="hero-veil" aria-hidden="true"></div>
+
+  <!-- 观测台状态条：全部是真实读数，不做装饰性假数据 -->
+  <div class="telemetry-bar" aria-label="观测台状态">
+    <span class="t-live">OBS ONLINE</span>
+    <span>PLATES <b id="tmPlates">189</b></span>
+    <span class="t-hide-sm">SOURCES <b>08</b></span>
+    <span class="t-hide-sm">FEED <b class="t-accent">NASA / JPL / NOAA</b></span>
+    <span>UTC <b id="tmClock" aria-hidden="true">--:--:--</b></span>
+  </div>
+
   <div class="hero-inner">
+    <p class="hero-crumb">ARCHIVE <em>/</em> DEEP SPACE <em>/</em> 001</p>
     <p class="hero-kicker">SPACE DATA ARCHIVE · 宇宙影像档案</p>
     <h1 class="hero-title">漫游寰宇</h1>
     <p class="hero-sub">一百八十九幅太空影像、六段动态画面、六千颗系外行星，<br>以及此刻的太阳、正在燃烧的野火与全球排队待发的火箭。</p>

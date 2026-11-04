@@ -16,7 +16,7 @@
   width: 100%;
   border-radius: 20px;
   border: 1px solid var(--line);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 120px rgba(216, 166, 87, 0.12);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 120px rgba(122, 211, 224, 0.12);
 }
 .featured-fig figcaption {
   margin-top: 12px;
@@ -40,7 +40,7 @@
   gap: 10px 22px;
 }
 .featured-meta li {
-  border-left: 2px solid rgba(216, 166, 87, 0.5);
+  border-left: 2px solid rgba(122, 211, 224, 0.5);
   padding-left: 12px;
   font-size: var(--fs-body-s);
   color: #c3cde0;
@@ -71,12 +71,12 @@
   transition: all 0.28s var(--ease);
   font-family: var(--font-sans);
 }
-.chip:hover { color: var(--text); border-color: rgba(216, 166, 87, 0.5); }
+.chip:hover { color: var(--text); border-color: rgba(122, 211, 224, 0.5); }
 .chip.active {
   color: #fff;
-  background: linear-gradient(135deg, rgba(216, 166, 87, 0.9), rgba(111, 199, 216, 0.75));
+  background: linear-gradient(135deg, rgba(122, 211, 224, 0.9), rgba(122, 211, 224, 0.75));
   border-color: transparent;
-  box-shadow: 0 4px 18px rgba(216, 166, 87, 0.35);
+  box-shadow: 0 4px 18px rgba(122, 211, 224, 0.35);
 }
 .chip .chip-n { opacity: 0.65; font-size: var(--fs-caption); margin-left: 4px; }
 
@@ -92,7 +92,7 @@
   border-radius: 14px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 32% 28%, rgba(216, 166, 87, 0.08), transparent 62%),
+    radial-gradient(circle at 32% 28%, rgba(122, 211, 224, 0.08), transparent 62%),
     linear-gradient(135deg, #0d1424, #080d1a);
   border: 1px solid var(--line);
   cursor: zoom-in;
@@ -120,8 +120,8 @@
 }
 .card.in { opacity: 1; transform: none; }
 .card:hover {
-  border-color: rgba(216, 166, 87, 0.55);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(216, 166, 87, 0.25);
+  border-color: rgba(122, 211, 224, 0.55);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(122, 211, 224, 0.25);
   z-index: 2;
 }
 .card img {
@@ -189,7 +189,7 @@
   font-size: var(--fs-caption);
   color: var(--faint);
   background:
-    radial-gradient(circle at 30% 30%, rgba(216, 166, 87, 0.12), transparent 60%),
+    radial-gradient(circle at 30% 30%, rgba(122, 211, 224, 0.12), transparent 60%),
     #0d1424;
 }
 .grid-empty { color: var(--faint); font-size: var(--fs-body-s); padding: 30px 0; }
@@ -263,7 +263,7 @@
   transition: background 0.25s, transform 0.25s;
   font-family: var(--font-serif);
 }
-.lb-nav:hover { background: rgba(216, 166, 87, 0.5); }
+.lb-nav:hover { background: rgba(122, 211, 224, 0.5); }
 .lb-prev { left: 14px; }
 .lb-next { right: 14px; }
 .lb-nav:hover { transform: translateY(-50%) scale(1.1); }
@@ -283,7 +283,7 @@
   font-size: var(--fs-caption);
   letter-spacing: 0.12em;
   color: #fff;
-  background: linear-gradient(135deg, rgba(216, 166, 87, 0.85), rgba(111, 199, 216, 0.7));
+  background: linear-gradient(135deg, rgba(122, 211, 224, 0.85), rgba(122, 211, 224, 0.7));
   border-radius: 999px;
 }
 .lb-info-side p { margin-top: 8px; font-size: var(--fs-caption); color: var(--faint); line-height: var(--lh-body); }
@@ -357,7 +357,7 @@
 .lb-thumb.active {
   opacity: 1;
   border-color: var(--cyan);
-  box-shadow: 0 0 0 1px rgba(111, 199, 216, 0.4);
+  box-shadow: 0 0 0 1px rgba(122, 211, 224, 0.4);
 }
 
 /* ---------- 图库响应式 ---------- */
@@ -567,7 +567,7 @@
   height: auto;
   border-radius: var(--r-md);
   background:
-    radial-gradient(ellipse 60% 55% at 50% 45%, rgba(111, 199, 216, 0.06), transparent 70%),
+    radial-gradient(ellipse 60% 55% at 50% 45%, rgba(122, 211, 224, 0.06), transparent 70%),
     #02040c;
   cursor: crosshair;
 }
@@ -633,7 +633,7 @@
   transition: border-color var(--t-2), background var(--t-2);
 }
 .search-box:focus-within {
-  border-color: rgba(111, 199, 216, 0.5);
+  border-color: rgba(122, 211, 224, 0.5);
   background: var(--surface-2);
 }
 .search-box svg { flex: 0 0 auto; opacity: 0.7; }

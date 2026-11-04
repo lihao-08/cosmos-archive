@@ -137,7 +137,22 @@
     Object.keys(triggers).forEach(function (k) { triggers[k](); });
   }
 
+  /* 遥测条：影像总数取自 data.js，时钟用真实 UTC，不写假读数 */
+  function initTelemetry() {
+    var clock = document.getElementById("tmClock");
+    var plates = document.getElementById("tmPlates");
+    function tick() {
+      if (clock) clock.textContent = new Date().toISOString().slice(11, 19);
+      if (plates && window.NASA_DATA && window.NASA_DATA.items) {
+        plates.textContent = String(window.NASA_DATA.items.length);
+      }
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+
   function init() {
+    initTelemetry();
     TASKS.forEach(function (task) {
       if (task.eager) { start(task); return; }
       var fire = whenNear(task.id, function () { start(task); });

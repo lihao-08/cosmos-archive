@@ -640,10 +640,27 @@
   pfCanvas.addEventListener("pointerleave", pfEnd);
 
   /* ---------- 信息面板 ---------- */
+  function stampUTC(jd) {
+    var d = astro.dateFromJd(jd);
+    var p = function (n) { return (n < 10 ? "0" : "") + n; };
+    return d.getUTCFullYear() + "-" + p(d.getUTCMonth() + 1) + "-" + p(d.getUTCDate()) +
+      " " + p(d.getUTCHours()) + ":" + p(d.getUTCMinutes()) + " UTC";
+  }
+
   function renderInfo(name) {
     var box = $("#orreryInfo");
     if (!name) {
-      box.innerHTML = '<p class="orrery-hint">点击太阳或任意行星，查看实时轨道数据。</p>';
+      // 没选中天体时不留一张空卡：给当前视图的真实参数
+      var spd = document.querySelector("#orrerySpeeds .spd.active");
+      var spdTxt = spd ? spd.textContent.trim() : "—";
+      box.innerHTML =
+        '<p class="orrery-hint">点击太阳或任意行星，查看实时轨道数据。</p>' +
+        '<div class="oi-grid oi-facts">' +
+        '<div><span class="k">历元</span><span class="v">' + stampUTC(orrery.jd) + '</span></div>' +
+        '<div><span class="k">时间倍率</span><span class="v">' + spdTxt + '</span></div>' +
+        '<div><span class="k">视角倾角</span><span class="v">' + Math.round(orrery.tilt) + '°</span></div>' +
+        '<div><span class="k">绘制天体</span><span class="v">太阳 + 8 行星</span></div>' +
+        '</div>';
       return;
     }
     var jd = orrery.jd;
@@ -699,6 +716,7 @@
     $$(".spd").forEach(function (b) { b.classList.remove("active"); });
     btn.classList.add("active");
     orrery.speed = parseFloat(btn.getAttribute("data-s"));
+    if (!orrery.selected) renderInfo(null);
   });
   function $$(s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); }
 
@@ -706,6 +724,7 @@
   tiltInput.addEventListener("input", function () {
     orrery.tilt = parseFloat(tiltInput.value);
     $("#tiltVal").textContent = orrery.tilt + "°";
+    if (!orrery.selected) renderInfo(null);
     draw();
   });
 
@@ -778,6 +797,7 @@
 
   syncSlider();
   updateClock();
+  renderInfo(null);   // 首屏就把视图参数填上，别留一张空卡
   draw();
   startLoop();
 

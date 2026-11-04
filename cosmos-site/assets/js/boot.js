@@ -86,9 +86,12 @@
       id: "featured",
       eager: true,
       // 深空图库 / 统计条 / 页脚都依赖 NASA 影像总表
+      // archive 必须先于 gallery：卡片渲染时要给收藏角标挂状态
       run: function () {
         return data("data").then(function () {
-          return Promise.all([safe(js("gallery")), safe(js("solar"))]);
+          return safe(js("archive")).then(function () {
+            return Promise.all([safe(js("gallery")), safe(js("solar"))]);
+          });
         });
       }
     },

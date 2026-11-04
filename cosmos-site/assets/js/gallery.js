@@ -24,6 +24,10 @@
 
   /* ---------- 卡片 ---------- */
   function makeCard(item, idx) {
+    // 卡片外面套一层 .plate：收藏按钮与卡片平级，避免 role=button 里嵌 button
+    var plate = document.createElement("div");
+    plate.className = "plate";
+
     var card = document.createElement("figure");
     card.className = "card";
     card.setAttribute("role", "button");
@@ -31,11 +35,15 @@
     card.setAttribute("aria-label", zhTitle(item) + "（" + item.cat + "）");
     card.dataset.k = idx % 8;
     card._item = item;
+    card._wrap = plate;
 
     var img = document.createElement("img");
     img.loading = "lazy";
     img.decoding = "async";
     img.alt = zhTitle(item);
+    // 明确尺寸：图版固定 4:3，先占位再加载，避免布局跳动
+    img.width = 800;
+    img.height = 600;
     img.src = enc(toW(item.thumb || item.img));
     img.addEventListener("load", function () {
       img.classList.add("loaded");
@@ -67,6 +75,17 @@
     card.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openFromCard(card); }
     });
+
+    plate.appendChild(card);
+
+    var fav = document.createElement("button");
+    fav.type = "button";
+    fav.className = "card-fav";
+    fav.setAttribute("aria-pressed", "false");
+    fav.textContent = "☆";
+    if (C.archive && C.archive.attach) C.archive.attach(fav, item);
+    plate.appendChild(fav);
+
     return card;
   }
 
@@ -123,7 +142,7 @@
     for (var i = g.rendered; i < end; i++) {
       var card = makeCard(g.visible[i], i);
       card.dataset.gal = g.id;
-      frag.appendChild(card);
+      frag.appendChild(card._wrap || card);
       if (cardObserver) cardObserver.observe(card);
       else card.classList.add("in");
     }
@@ -240,6 +259,11 @@
   var lbBackdrop = $("#lbBackdrop");
   var lbSpinner = $("#lbSpinner");
   var lbStrip = $("#lbStrip");
+  var lbCredit = $("#lbCredit");
+  var lbId = $("#lbId");
+  var lbLink = $("#lbLink");
+  var lbFav = $("#lbFav");
+  var lbCite = $("#lbCite");
   var lbState = { list: [], idx: 0 };
   var lastFocus = null;
 
@@ -278,11 +302,18 @@
     lbCat.textContent = it.cat;
     lbMeta.textContent = [
       it.date ? "日期 " + it.date : "",
-      it.center ? "中心 " + it.center : "",
-      it.credit && it.credit !== "NASA" ? "版权 " + it.credit : "",
-      "ID " + it.id
+      it.center ? "中心 " + it.center : ""
     ].filter(Boolean).join(" · ");
     lbCount.textContent = (lbState.idx + 1) + " / " + lbState.list.length;
+
+    // 出处三件套：出处机构 / 原始编号 / 原始记录链接
+    if (lbCredit) lbCredit.textContent = it.credit || "NASA";
+    if (lbId) lbId.textContent = it.id;
+    if (lbLink) {
+      lbLink.href = "https://images.nasa.gov/details/" + encodeURIComponent(it.id);
+      lbLink.setAttribute("aria-label", "在 NASA 影像库查看原始记录：" + zhTitle(it));
+    }
+    syncLbFav(it);
 
     var multi = lbState.list.length > 1;
     lbPrev.hidden = !multi;
@@ -291,8 +322,14 @@
     renderStrip();
   }
 
-  function renderStrip() {
-    if (!lbStrip) return;
+  function syncLbFav(it) {
+    if (!lbFav || !it) return;
+    var on_ = C.archive && C.archive.has ? C.archive.has(it.id) : false;
+    lbFav.setAttribute("aria-pressed", on_ ? "true" : "false");
+    lbFav.textContent = on_ ? "★ 已收藏" : "☆ 收藏";
+  }
+
+  function renderStrip() {    if (!lbStrip) return;
     var n = lbState.list.length;
     if (n < 2) { lbStrip.hidden = true; return; }
     lbStrip.hidden = false;
@@ -352,6 +389,21 @@
     C.on(lbBackdrop, "click", closeLb);
     C.on(lbPrev, "click", function () { step(-1); });
     C.on(lbNext, "click", function () { step(1); });
+    C.on(lbFav, "click", function () {
+      var it = lbState.list[lbState.idx];
+      if (!it || !C.archive) return;
+      var now = C.archive.toggle(it.id);
+      syncLbFav(it);
+      C.archive.toast(now ? "已收进「我的收藏」" : "已从收藏移除");
+    });
+    C.on(lbCite, "click", function () {
+      var it = lbState.list[lbState.idx];
+      if (it && C.archive) C.archive.cite(it);
+    });
+    // 收藏状态在别处（抽屉/卡片）改动时，同步灯箱里的按钮
+    document.addEventListener("cosmos:fav", function () {
+      if (!lb.hidden && lbState.list[lbState.idx]) syncLbFav(lbState.list[lbState.idx]);
+    });
     document.addEventListener("keydown", function (e) {
       if (lb.hidden) return;
       if (e.key === "Escape") closeLb();
@@ -394,5 +446,14 @@
   }
 
   /* ---------- 暴露给其他模块 ---------- */
-  window.COSMOS.gallery = { open: galleryOpen, items: ITEMS };
+  window.COSMOS.gallery = {
+    open: galleryOpen,
+    // 收藏抽屉等外部入口：直接给一列影像就能开灯箱
+    openList: function (list, idx) {
+      if (!list || !list.length) return;
+      lastFocus = document.activeElement;
+      openLb(list, idx || 0);
+    },
+    items: ITEMS
+  };
 })();

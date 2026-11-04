@@ -65,7 +65,7 @@ window.COSMOS = (function () {
           el.textContent = Math.round(target * eased) + suffix;
           if (p < 1) raf(tick);
         })(t0);
-      }, { threshold: 0.5 });
+      }, { threshold: 0.15 });
       io.observe(el);
     });
   }

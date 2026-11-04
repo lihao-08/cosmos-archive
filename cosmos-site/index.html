@@ -13,11 +13,37 @@
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>漫游寰宇 · 基于 NASA 开放数据的宇宙影像档案</title>
-<meta name="description" content="寰宇 COSMOS：汇聚 NASA、JPL、NOAA 等全球航天机构公开数据的宇宙影像档案——深空影像、动态影像、实时太阳活动、全球发射日程、近地小行星与系外行星图鉴。">
-<!-- 提前取回首屏最重的两个资源：影像总表由 boot.js 动态注入；
-     背景图用低优先级预载，避免 367KB 图片挤占阻塞渲染的 CSS 带宽 -->
-<link rel="preload" as="script" href="assets/data/data.js">
-<link rel="preload" as="image" href="assets/img/hero-pillars.webp" type="image/webp" fetchpriority="low">
+<meta name="description" content="寰宇 COSMOS：汇聚 NASA、JPL、NOAA 等全球航天机构公开数据的宇宙影像档案——深空影像、动态影像、实时太阳活动、全球发射日程、近地小行星与系外行星图鉴。每幅影像保留原始编号，可逐条回溯。">
+<link rel="canonical" href="https://lihao-08.github.io/cosmos-archive/">
+<!-- 分享链接（?f=…）会出现在聊天工具里，补上社交卡片元数据 -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="漫游寰宇 COSMOS">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:title" content="漫游寰宇 · 基于 NASA 开放数据的宇宙影像档案">
+<meta property="og:description" content="189 幅太空影像、6 段动态画面、实时太阳活动与全球发射日程。每幅影像都附原始编号，可在 NASA 影像库逐条核对。">
+<meta property="og:url" content="https://lihao-08.github.io/cosmos-archive/">
+<meta property="og:image" content="https://lihao-08.github.io/cosmos-archive/assets/img/hero-pillars.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "漫游寰宇 COSMOS",
+  "alternateName": "COSMOS Archive",
+  "url": "https://lihao-08.github.io/cosmos-archive/",
+  "inLanguage": "zh-CN",
+  "isAccessibleForFree": true,
+  "description": "基于 NASA、JPL、NOAA 公开数据的宇宙影像档案，含 189 幅影像与实时太空数据。",
+  "about": {
+    "@type": "Dataset",
+    "name": "NASA Image and Video Library 影像选集",
+    "description": "189 幅来自 NASA 公开影像库的深空、行星与航天影像，均附原始记录编号。",
+    "creator": { "@type": "Organization", "name": "NASA" },
+    "isAccessibleForFree": true,
+    "license": "https://www.nasa.gov/multimedia/guidelines/index.html"
+  }
+}
+</script>
 <!-- 提前取回首屏最重的两个资源：影像总表由 boot.js 动态注入；
      背景图用低优先级预载，避免 367KB 图片挤占阻塞渲染的 CSS 带宽 -->
 <link rel="preload" as="script" href="assets/data/data.js">
@@ -57,6 +83,11 @@
     <a href="#live" data-sec="live">实时太空</a>
     <a href="#about" data-sec="about">关于数据</a>
   </div>
+  <button class="nav-fav" id="navFav" type="button" aria-haspopup="dialog" aria-expanded="false" aria-label="我的收藏（0 张）">
+    <span class="nav-fav-star" aria-hidden="true">☆</span>
+    <span class="nav-fav-label">收藏</span>
+    <b id="favCount">0</b>
+  </button>
   <button class="nav-burger" id="navBurger" aria-label="菜单" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
@@ -88,6 +119,16 @@
       <button class="btn btn-ghost" id="btnRandom">随机一张 ✦</button>
     </div>
   </div>
+
+  <!-- 首屏简报：三条读数与一句话摘要全部由 data.js 现场算出来，不写死 -->
+  <div class="hero-brief" id="heroBrief" aria-label="档案简报">
+    <p class="hb-lead" id="hbLead">正在读取档案索引…</p>
+    <dl class="hb-read">
+      <div><dt>收录跨度</dt><dd id="hbSpan">—</dd></div>
+      <div><dt>最近同步</dt><dd id="hbUpdated">—</dd></div>
+      <div><dt>可回溯</dt><dd id="hbTrace">—</dd></div>
+    </dl>
+  </div>
   <div class="hero-scroll" aria-hidden="true"><span></span></div>
 </header>
 
@@ -103,7 +144,7 @@
 <section class="featured section" id="featured">
   <div class="wrap featured-grid">
     <figure class="featured-fig reveal">
-      <img src="assets/img/featured-webb.webp" alt="韦伯望远镜拍摄的 SMACS 0723 星系团深空场" loading="eager">
+      <img src="assets/img/featured-webb.webp" alt="韦伯望远镜拍摄的 SMACS 0723 星系团深空场" loading="eager" width="1200" height="900" decoding="async">
       <figcaption>SMACS 0723 星系团 · 韦伯望远镜首张深空场</figcaption>
     </figure>
     <div class="featured-text reveal">
@@ -408,7 +449,7 @@
       <!-- 地球 -->
       <div class="live-panel active" id="panel-earth">
         <div class="earth-stage">
-          <img id="epicImg" alt="DSCOVR 卫星拍摄的地球全圆盘" src="assets/img/epic/epic_01.webp">
+          <img id="epicImg" alt="DSCOVR 卫星拍摄的地球全圆盘" src="assets/img/epic/epic_01.webp" width="1024" height="1024" decoding="async">
           <div class="earth-badge" id="epicTime">—</div>
         </div>
         <div class="earth-side">
@@ -425,7 +466,7 @@
       <!-- 太阳活动 -->
       <div class="live-panel" id="panel-sun">
         <div class="sun-stage">
-          <img id="sunImg" src="assets/img/sun/sun_0193.webp" alt="NASA SDO 卫星拍摄的太阳全日面">
+          <img id="sunImg" src="assets/img/sun/sun_0193.webp" alt="NASA SDO 卫星拍摄的太阳全日面" width="1024" height="1024" decoding="async">
           <div class="sun-waves" id="sunWaves" role="group" aria-label="观测波段"></div>
         </div>
         <div class="sun-side">
@@ -499,13 +540,15 @@
       <p>目前收录 <b>189 幅影像</b>、<b>6 段动态影像</b>、<b>6050 颗</b>已确认系外行星，以及持续更新的太阳活动、地球自然事件与全球发射日程。</p>
       <p><b>数据来源</b>：NASA（影像与视频、EPIC 地球、SDO 太阳、EONET 事件、系外行星档案）、JPL（小行星接近与轨道要素）、NOAA 空间天气预测中心（地磁指数与太阳风）、The Space Devs（全球发射日程）。</p>
       <p>「实时太阳系仪」与「今晚观天指南」由站内天文引擎实时解算：行星位置基于 JPL 轨道要素，误差小于 0.1°；月相与日月出没采用国际通行的天文算法。定位为科普演示，不作专业观测依据。</p>
-      <p>NASA 提供的影像与音视频资料多属公共领域，可自由使用。本站仅作展示与可视化，版权归 NASA 及相关贡献者所有。</p>
+      <p><b>逐条可回溯</b>：每幅影像在灯箱里都给出原始编号与 NASA 影像库链接，点开即可核对原始记录、拍摄日期与权利人，不必相信我们的转述。</p>
+      <p><b>使用许可</b>：NASA 内容在美国一般不受版权保护，可用于教育与信息性用途；依 NASA 媒体使用指南，转载须注明 NASA 为来源，且不得暗示 NASA 对本站的认可。NASA 徽标、标识与徽章受法律保护，本站不使用。若某幅影像属第三方版权，原始记录页会标注权利人，请以该记录为准。</p>
     </div>
     <dl class="about-facts reveal">
       <div><dt>数据来源</dt><dd>8 个权威机构</dd></div>
       <div><dt>影像档案</dt><dd>189 幅 + 6 段</dd></div>
       <div><dt>行星数据</dt><dd>6050 颗系外行星</dd></div>
-      <div><dt>更新频率</dt><dd>持续更新</dd></div>
+      <div><dt>更新频率</dt><dd>每日 06:00</dd></div>
+      <div><dt>收藏与分享</dt><dd>只存本地</dd></div>
     </dl>
   </div>
   <div class="wrap">
@@ -528,6 +571,28 @@
     </div>
   </div>
 </footer>
+
+<!-- ================= 我的收藏（localStorage，无需登录） ================= -->
+<aside class="fav-drawer" id="favDrawer" role="dialog" aria-modal="true" aria-labelledby="favTitle" hidden>
+  <header class="fav-head">
+    <div>
+      <p class="fav-kicker">COLLECTION <em>/</em> LOCAL ONLY</p>
+      <h2 id="favTitle">我的收藏</h2>
+    </div>
+    <button class="fav-close" id="favClose" type="button" aria-label="关闭收藏">✕</button>
+  </header>
+  <p class="fav-note" id="favNote">收藏只存在这台设备的浏览器里，不上传、不需要账号。想给别人看，就复制分享链接。</p>
+  <p class="fav-shared" id="favShared" hidden>
+    <span>这是一份分享清单（<b id="favSharedN">0</b> 张），尚未存进你的浏览器。</span>
+    <button type="button" id="favImport">全部收进我的收藏</button>
+  </p>
+  <ul class="fav-list" id="favList"></ul>
+  <p class="fav-empty" id="favEmpty">还没有收藏。<br>在图版右上角点 ☆，就会收进这里。</p>
+  <footer class="fav-foot">
+    <button type="button" class="btn btn-primary" id="favShare">复制分享链接</button>
+    <button type="button" class="btn btn-ghost" id="favClear">清空</button>
+  </footer>
+</aside>
 
 <!-- ================= LIGHTBOX ================= -->
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="影像详情" hidden>
@@ -553,6 +618,18 @@
         <p id="lbCount" class="lb-count"></p>
       </div>
     </figcaption>
+    <!-- 出处与引用：档案的可核查性比好看更重要 -->
+    <div class="lb-src" id="lbSrc">
+      <dl class="lb-src-grid">
+        <div><dt>出处</dt><dd id="lbCredit">—</dd></div>
+        <div><dt>原始编号</dt><dd><code id="lbId">—</code></dd></div>
+        <div><dt>原始记录</dt><dd><a id="lbLink" href="#" target="_blank" rel="noopener noreferrer">NASA 影像库 ↗</a></dd></div>
+      </dl>
+      <div class="lb-src-act">
+        <button type="button" class="lb-act" id="lbFav" aria-pressed="false">☆ 收藏</button>
+        <button type="button" class="lb-act" id="lbCite">复制引用</button>
+      </div>
+    </div>
   </figure>
 </div>
 

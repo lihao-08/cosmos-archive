@@ -20,8 +20,6 @@
   var ITEMS = DATA.items || [];
   if (!ITEMS.length) return;
 
-  var BATCH = 24;   // 每批渲染数量
-
   /* ---------- 卡片 ---------- */
   function makeCard(item, idx) {
     // 卡片外面套一层 .plate：收藏按钮与卡片平级，避免 role=button 里嵌 button
@@ -124,15 +122,17 @@
     return g;
   }
 
-  // 按当前可见列表重新分批渲染
+  // 一次渲染完整列表。旧做法是滚到哨兵再追加 24 张，结果每追加一批
+  // 就把下面的「动态影像 / 轨道仪 / 今晚星空」整体推下去；实测滚一遍
+  // 整页从 16034px 长到 20867px，懒加载的触发点一路后退，追不上。
+  // 189 张卡片的 DOM 成本可以忽略，图片本来就有 loading="lazy"。
   function resetGallery(g, list) {
     g.visible = list;
     g.rendered = 0;
     g.grid.innerHTML = "";
     if (g.sentinel && g.sentinel.parentNode) g.sentinel.parentNode.removeChild(g.sentinel);
     g.sentinel = null;
-    appendBatch(g, BATCH);
-    if (g.rendered < list.length) attachSentinel(g);
+    appendBatch(g, list.length);
   }
 
   function appendBatch(g, n) {
@@ -148,23 +148,6 @@
     }
     g.grid.appendChild(frag);
     g.rendered = end;
-  }
-
-  function attachSentinel(g) {
-    var s = document.createElement("div");
-    s.className = "grid-sentinel";
-    s.setAttribute("aria-hidden", "true");
-    g.sentinel = s;
-    g.grid.parentNode.insertBefore(s, g.grid.nextSibling);
-
-    if (!("IntersectionObserver" in window)) { appendBatch(g, BATCH); return; }
-    var io = new IntersectionObserver(function (entries) {
-      if (!entries[0].isIntersecting) return;
-      appendBatch(g, BATCH);
-      if (g.rendered >= g.visible.length) { io.disconnect(); s.remove(); g.sentinel = null; }
-    }, { rootMargin: "300px" });
-    io.observe(s);
-    s._io = io;
   }
 
   var G_DEEP = buildGallery("grid-deep", ["星云", "星系", "黑洞", "深空场", "系外行星", "韦伯望远镜"]);
@@ -266,21 +249,30 @@
   var lbCite = $("#lbCite");
   var lbState = { list: [], idx: 0 };
   var lastFocus = null;
+  var renderSeq = 0;   // 灯箱图片请求序号，防止旧请求覆盖新图
 
   function renderLb() {
     var it = lbState.list[lbState.idx];
     if (!it) return;
 
+    var seq = ++renderSeq;
     if (lbSpinner) lbSpinner.hidden = false;
-    lbImg.classList.remove("ready");
+    // 先用已缓存的缩略图占位（约 18KB），原图到了再换。
+    // 跨境拉原图实测要 4.6 秒，这段时间灯箱原本是一片黑底加转圈。
+    lbImg.classList.add("ready");
+    lbImg.classList.add("is-preview");
+    lbImg.src = enc(toW(it.thumb || it.img));
+
     var loader = new Image();
     var triedJpg = false;
     loader.onload = function () {
+      if (seq !== renderSeq) return;   // 连点下一张时，别让旧图盖住新图
       lbImg.src = loader.src;
-      lbImg.classList.add("ready");
+      lbImg.classList.remove("is-preview");
       if (lbSpinner) lbSpinner.hidden = true;
     };
     loader.onerror = function () {
+      if (seq !== renderSeq) return;
       // new Image() 不在 DOM 里，收不到 boot.js 的全局回退，这里单独兜一层
       if (!triedJpg && /\.webp$/i.test(loader.src)) {
         triedJpg = true;
@@ -288,7 +280,7 @@
         return;
       }
       if (lbSpinner) lbSpinner.hidden = true;
-      lbImg.classList.add("ready");
+      lbImg.classList.remove("is-preview");
     };
     loader.src = enc(toW(it.img));
     lbImg.alt = zhTitle(it);

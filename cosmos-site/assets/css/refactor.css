@@ -1004,3 +1004,20 @@ input[type="range"]::-moz-range-track {
 @media (max-height: 860px) and (min-width: 900px) {
   .hero-inner { padding-top: 128px; }
 }
+
+/* ---------- 灯箱：原图没到之前先显示模糊缩略图，别晾一块黑底 ---------- */
+.lb-img-wrap img.is-preview {
+  /* 缩略图与原图长宽比一致，这里按原图的最终高度撑开，
+     换图时只换清晰度、不跳尺寸 */
+  height: min(66svh, 640px);
+  width: auto;
+  max-width: 100%;
+  filter: blur(9px) saturate(1.05);
+  transform: scale(1.01);
+}
+.lb-img-wrap img {
+  transition: filter .28s ease, transform .28s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lb-img-wrap img, .lb-img-wrap img.is-preview { transition: none; }
+}

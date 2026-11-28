@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     steps:
       - name: 检出仓库
         uses: actions/checkout@v4
@@ -90,3 +90,18 @@ jobs:
       - name: 部署
         id: deployment
         uses: actions/deploy-pages@v4
+        # Pages 的部署接口偶发直接报错（11-25、11-28 各失败一次，都是
+        # in_progress 后十几秒就返回），数据提交没问题，只是没上线。
+        # 先降级为可失败，下一步再给一次机会。
+        continue-on-error: true
+
+      - name: 部署重试（Pages 偶发失败）
+        id: deployment_retry
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+
+      - name: 部署结果
+        if: steps.deployment.outcome == 'failure' && steps.deployment_retry.outcome == 'failure'
+        run: |
+          echo "::error::两次部署均失败，本次数据已提交但未上线；下次运行会把积压的提交一起发布"
+          exit 1
